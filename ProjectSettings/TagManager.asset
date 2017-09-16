@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Rope
   - PlayerTag
+  - EnemyTag
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -25,8 +27,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Enemy
+  - FriendlyBullet
   - 
   - 
   - 
