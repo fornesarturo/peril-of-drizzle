@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     Rigidbody2D rb2;
+	Animator anim;
     private static int speed = 10;
     private static float climbSpeed = 8f;
     private static Vector2 jumpVector = new Vector2(0, 15.0f);
@@ -15,8 +16,9 @@ public class PlayerController : MonoBehaviour {
     private static float gravity = 4.0f;
 
     private void Awake() {
-        rb2 = GetComponent<Rigidbody2D>();
+        rb2 = GetComponent<Rigidbody2D> ();
         rb2.gravityScale = gravity;
+		anim = GetComponent<Animator> ();
     }
     // Use this for initialization
     void Start () {
@@ -29,12 +31,11 @@ public class PlayerController : MonoBehaviour {
         float jump = Input.GetAxisRaw("Jump");
         float fire = Input.GetAxisRaw("Fire1");
 
-        print("Jump: " + jump + ", Fire: " + fire);
+		anim.SetFloat ("Speed", h);
         rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
         if(Input.GetKeyDown(KeyCode.Space)) {
             if (jumps > 0) {
-                print("Double Jump = " + jumps);
                 jumps--;
                 rb2.velocity = new Vector2(rb2.velocity.x, 0);
                 rb2.AddForce(jumpVector, ForceMode2D.Impulse);
@@ -42,7 +43,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         if(rope && Mathf.Abs(v) > 0) {
-            print("Going up the rope");
             rb2.gravityScale = 0;
             rb2.velocity = new Vector2();
             rb2.position = new Vector2( rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
@@ -55,7 +55,6 @@ public class PlayerController : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.transform.tag) {
             case "Ground":
-                print("Grounded");
                 jumps = 2;
                 grounded = true;
                 break;
@@ -84,7 +83,6 @@ public class PlayerController : MonoBehaviour {
         switch (collision.transform.tag) {
             case "Rope":
                 rope = false;
-                print("Let go of the Rope");
                 Physics2D.IgnoreLayerCollision(gameObject.layer, 8, false);
                 rb2.gravityScale = gravity;
                 jumps = 1;

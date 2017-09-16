@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Rope
+  - PlayerTag
   layers:
   - Default
   - TransparentFX
