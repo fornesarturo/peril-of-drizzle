@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpriteListener : MonoBehaviour {
+public class SpawnerScript : MonoBehaviour {
 
-	public Sprite right, left, run;
+	public GameObject spawnOfEvil;
 	// Use this for initialization
 	void Start () {
-		
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		float h = Input.GetAxisRaw ("Horizontal");
-
-		if (Mathf.Abs (h) > 0) {
-			
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			Instantiate (spawnOfEvil, transform.position, transform.rotation);
 		}
+			
 	}
 }

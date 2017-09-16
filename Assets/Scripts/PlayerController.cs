@@ -4,27 +4,29 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    Rigidbody2D rb2;
 	Animator anim;
-    private static int speed = 10;
+	public GameObject bullet;
+	private Rigidbody2D rb2;
+	private static int speed = 10;
     private static float climbSpeed = 8f;
     private static Vector2 jumpVector = new Vector2(0, 15.0f);
     private static int jumps = 2;
-    private static bool grounded;
+    // private static bool grounded;
     private static bool rope;
-    private static long jumpTime = 10;
     private static float gravity = 4.0f;
+	public int life = 10;
+	private int direction = 1;
 
     private void Awake() {
         rb2 = GetComponent<Rigidbody2D> ();
         rb2.gravityScale = gravity;
 		anim = GetComponent<Animator> ();
     }
-    // Use this for initialization
+
     void Start () {
+		
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
@@ -33,6 +35,12 @@ public class PlayerController : MonoBehaviour {
 
 		anim.SetFloat ("Speed", h);
         rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
+
+		if (h > 0) {
+			direction = 1;
+		} else if (h < 0) {
+			direction = -1;
+		}
 
         if(Input.GetKeyDown(KeyCode.Space)) {
             if (jumps > 0) {
@@ -43,20 +51,26 @@ public class PlayerController : MonoBehaviour {
         }
 
         if(rope && Mathf.Abs(v) > 0) {
+			
             rb2.gravityScale = 0;
             rb2.velocity = new Vector2();
             rb2.position = new Vector2( rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
             Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
-            grounded = false;
+            // grounded = false;
             jumps = 0;
         }
+
+		if (Input.GetKeyDown (KeyCode.Z)) {
+			GameObject bulletClone  = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone.GetComponent<Rigidbody2D> ().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+		}
 	}
 
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.transform.tag) {
             case "Ground":
                 jumps = 2;
-                grounded = true;
+                // grounded = true;
                 break;
         }
     }
@@ -65,7 +79,7 @@ public class PlayerController : MonoBehaviour {
         switch (collision.transform.tag) {
             case "Ground":
                 print("Not Grounded");
-                grounded = false;
+                // grounded = false;
                 break;
         }
     }
@@ -88,10 +102,5 @@ public class PlayerController : MonoBehaviour {
                 jumps = 1;
                 break;
         }
-    }
-
-    IEnumerator jumpCorroutine() {
-
-        yield return null;
     }
 }
