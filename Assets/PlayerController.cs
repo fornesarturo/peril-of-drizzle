@@ -14,6 +14,13 @@ public class PlayerController : MonoBehaviour {
     private static long jumpTime = 10;
     private static float gravity = 4.0f;
 
+    // Control of character
+    public string horizontalControl = "Horizontal_P1";
+    public string verticalControl = "Vertical_P1";
+    public string jumpControl = "Jump_P1";
+    public string fireControl = "Fire_P1";
+    public int playerNo = 1;
+
     private void Awake() {
         rb2 = GetComponent<Rigidbody2D>();
         rb2.gravityScale = gravity;
@@ -24,15 +31,15 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        float jump = Input.GetAxisRaw("Jump");
-        float fire = Input.GetAxisRaw("Fire1");
+        float h = Input.GetAxisRaw(horizontalControl);
+        float v = Input.GetAxisRaw(verticalControl);
+        float jump = Input.GetAxisRaw(jumpControl);
+        float fire = Input.GetAxisRaw(fireControl);
 
         print("Jump: " + jump + ", Fire: " + fire);
         rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
-        if(Input.GetKeyDown(KeyCode.Space)) {
+        if(Input.GetKeyDown("joystick " + playerNo + " button 0")) {
             if (jumps > 0) {
                 print("Double Jump = " + jumps);
                 jumps--;
@@ -46,7 +53,7 @@ public class PlayerController : MonoBehaviour {
             rb2.gravityScale = 0;
             rb2.velocity = new Vector2();
             rb2.position = new Vector2( rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
-            Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
+            Physics2D.IgnoreLayerCollision(8, gameObject.layer, true);
             grounded = false;
             jumps = 0;
         }
