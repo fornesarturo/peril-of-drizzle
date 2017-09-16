@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
         print("Jump: " + jump + ", Fire: " + fire);
         rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
-        if(Input.GetKeyDown("joystick " + playerNo + " button 0")) {
+        if(Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
             if (jumps > 0) {
                 print("Double Jump = " + jumps);
                 jumps--;
