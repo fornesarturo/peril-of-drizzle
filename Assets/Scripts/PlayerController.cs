@@ -10,9 +10,9 @@ public class PlayerController : MonoBehaviour {
 	private static int speed = 10;
     private static float climbSpeed = 8f;
     private static Vector2 jumpVector = new Vector2(0, 15.0f);
-    private static int jumps = 2;
+    private int jumps = 2;
     // private static bool grounded;
-    private static bool rope;
+    private bool rope;
     private static float gravity = 4.0f;
 	public int life = 10;
 	private int direction = 1;
@@ -43,19 +43,19 @@ public class PlayerController : MonoBehaviour {
 		anim.SetFloat ("Speed", h);
         rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
-				if (h > 0) {
-					direction = 1;
-				} else if (h < 0) {
-					direction = -1;
-				}
+		if (h > 0) {
+			direction = 1;
+		} else if (h < 0) {
+			direction = -1;
+		}
 
-				if(Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
-		            if (jumps > 0) {
-		                jumps--;
-		                rb2.velocity = new Vector2(rb2.velocity.x, 0);
-		                rb2.AddForce(jumpVector, ForceMode2D.Impulse);
-		            }
-		        }
+		if(Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
+		    if (jumps > 0) {
+		        jumps--;
+		        rb2.velocity = new Vector2(rb2.velocity.x, 0);
+		        rb2.AddForce(jumpVector, ForceMode2D.Impulse);
+		    }
+		}
 
         if(rope && Mathf.Abs(v) > 0) {
 
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour {
             jumps = 0;
         }
 
-		if (Input.GetKeyDown (KeyCode.Z)) {
+		if (Input.GetKeyDown ("joystick " + playerNo + " button 1")) {
 			GameObject bulletClone  = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone.GetComponent<Rigidbody2D> ().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 		}
