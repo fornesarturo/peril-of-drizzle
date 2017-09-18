@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour {
     private static float gravity = 4.0f;
 	public int life = 10;
 	private int direction = 1;
-
+ 
     // Control of character
     public string horizontalControl = "Horizontal_P1";
     public string verticalControl = "Vertical_P1";
