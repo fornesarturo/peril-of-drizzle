@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	Animator anim;
 	public GameObject bullet;
 	private Rigidbody2D rb2;
 	private static int speed = 10;
@@ -20,58 +19,101 @@ public class PlayerController : MonoBehaviour {
     // Control of character
     public string horizontalControl = "Horizontal_P1";
     public string verticalControl = "Vertical_P1";
-    public string jumpControl = "Jump_P1";
-    public string fireControl = "Fire_P1";
-    public int playerNo = 1;
+    //public string jumpControl = "Jump_P1";
+    //public string fireControl = "Fire_P1";
+    public int playerNo;
+
+    public Sprite[] sprites; // Initial sprite array
+    private SpriteRenderer spriteRenderer; // Load sprite
+    private bool selectingPlayer; // true while selecting player
+    private int characterSpriteNumber; // default to player number
+    public RuntimeAnimatorController[] animators; // Initial animator array
+    private Animator animator; // Load animator
 
     private void Awake() {
         rb2 = GetComponent<Rigidbody2D> ();
         rb2.gravityScale = gravity;
-		anim = GetComponent<Animator> ();
+        this.characterSpriteNumber = this.playerNo - 1;
     }
 
     void Start () {
-
+        this.selectingPlayer = true;
+        StartCoroutine(this.selectCharacter());
 	}
 
 	void Update () {
-        float h = Input.GetAxisRaw(horizontalControl);
-        float v = Input.GetAxisRaw(verticalControl);
-        float jump = Input.GetAxisRaw(jumpControl);
-        float fire = Input.GetAxisRaw(fireControl);
+        if (selectingPlayer == false) {
+            float h = Input.GetAxisRaw(horizontalControl);
+            float v = Input.GetAxisRaw(verticalControl);
+            //float jump = Input.GetAxisRaw(jumpControl);
+            //float fire = Input.GetAxisRaw(fireControl);
 
-		anim.SetFloat ("Speed", h);
-        rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
+            animator.SetFloat("Speed", h);
+            rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
-		if (h > 0) {
-			direction = 1;
-		} else if (h < 0) {
-			direction = -1;
-		}
+            if (h > 0) {
+                direction = 1;
+            }
+            else if (h < 0) {
+                direction = -1;
+            }
 
-		if(Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
-		    if (jumps > 0) {
-		        jumps--;
-		        rb2.velocity = new Vector2(rb2.velocity.x, 0);
-		        rb2.AddForce(jumpVector, ForceMode2D.Impulse);
-		    }
-		}
+            // If button a is pressed, jump
+            if (Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
+                if (jumps > 0) {
+                    jumps--;
+                    rb2.velocity = new Vector2(rb2.velocity.x, 0);
+                    rb2.AddForce(jumpVector, ForceMode2D.Impulse);
+                }
+            }
 
-        if(rope && Mathf.Abs(v) > 0) {
+            // Go up rope
+            if (rope && Mathf.Abs(v) > 0) {
 
-            rb2.gravityScale = 0;
-            rb2.velocity = new Vector2();
-            rb2.position = new Vector2( rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
-            Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
-            // grounded = false;
-            jumps = 0;
+                rb2.gravityScale = 0;
+                rb2.velocity = new Vector2();
+                rb2.position = new Vector2(rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
+                Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
+                // grounded = false;
+                jumps = 0;
+            }
+
+            // If button b is pressed, shot
+            if (Input.GetKeyDown("joystick " + playerNo + " button 1")) {
+                GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+            }
         }
-
-		if (Input.GetKeyDown ("joystick " + playerNo + " button 1")) {
-			GameObject bulletClone  = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
-			bulletClone.GetComponent<Rigidbody2D> ().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-		}
 	}
+
+    private IEnumerator selectCharacter() {
+        this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+        this.animator = this.gameObject.AddComponent<Animator>();
+        this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+        this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+        while (this.selectingPlayer == true) {
+            if (Input.GetKeyDown("joystick " + this.playerNo + " button 5" ) || Input.GetKeyDown(KeyCode.H)) {
+                print("right!");
+                this.characterSpriteNumber = (this.characterSpriteNumber + 1) % 4;
+                this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+                this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+            }
+            else if (Input.GetKeyDown("joystick " + this.playerNo + " button 4") || Input.GetKeyDown(KeyCode.G)) {
+                print("left!");
+                this.characterSpriteNumber--;
+                if (this.characterSpriteNumber == -1) {
+                    this.characterSpriteNumber = 3;
+                }
+                this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+                this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+            }
+            else if (Input.GetKeyDown("joystick " + this.playerNo + " button 0") || Input.GetKeyDown(KeyCode.Y)) {
+                this.selectingPlayer = false;
+                yield break;
+            }
+            yield return null;
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.transform.tag) {
