@@ -79,9 +79,42 @@ public class PlayerController : MonoBehaviour {
             }
 
             // If button b is pressed, shot
-            if (Input.GetKeyDown("joystick " + playerNo + " button 1")) {
-                GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+            if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
+                if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if range
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                }
+                animator.SetTrigger("Attack");
+            }
+
+            // If button x is pressed, shot special
+            if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
+                if (this.characterSpriteNumber == 1) { // if alien
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                    GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(-direction * 40, 0), ForceMode2D.Impulse);
+                }
+                else if (this.characterSpriteNumber == 0) { // if human
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                    GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                }
+                else if (this.characterSpriteNumber == 2) { // if fem
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+                }
+                else if (this.characterSpriteNumber == 3) { // if n
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                    GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                    GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+                    GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                }
+                animator.SetTrigger("Special");
             }
         }
 	}
