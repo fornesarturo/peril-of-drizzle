@@ -41,6 +41,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
+		if (life == 0) {
+			Die ();
+		}
         if (selectingPlayer == false) {
             float h = Input.GetAxisRaw(horizontalControl);
             float v = Input.GetAxisRaw(verticalControl);
@@ -110,23 +113,23 @@ public class PlayerController : MonoBehaviour {
             // If button x is pressed, shot special
             if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
 				animator.SetTrigger("Special");
-                if (this.characterSpriteNumber == 1) { // if alien
+				if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                     GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(-direction * 40, 0), ForceMode2D.Impulse);
                 }
-                else if (this.characterSpriteNumber == 0) { // if human
+                else if (this.characterSpriteNumber == 0) { // if bob
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                     GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
                     bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                 }
-                else if (this.characterSpriteNumber == 2) { // if fem
+                else if (this.characterSpriteNumber == 2) { // if rebecca
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
                 }
-                else if (this.characterSpriteNumber == 3) { // if b
+                else if (this.characterSpriteNumber == 3) { // if tyronne
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                     GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
@@ -174,12 +177,6 @@ public class PlayerController : MonoBehaviour {
                 jumps = 2;
                 // grounded = true;
                 break;
-			case "EnemyTag":
-				life--;
-				if (life == 0) {
-					Destroy (transform.gameObject);
-				}
-				break;
         }
     }
 
@@ -194,15 +191,9 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         switch(collision.transform.tag) {
-            case "Rope":
-                print("Touching Rope");
-                rope = true;
-                break;
-		case "EnemyTag":
-			life--;
-			if (life == 0) {
-				Destroy (transform.gameObject);
-			}
+		case "Rope":
+			print("Touching Rope");
+			rope = true;
 			break;
         }
     }
@@ -217,4 +208,10 @@ public class PlayerController : MonoBehaviour {
                 break;
         }
     }
+
+	private void Die() {
+		gameObject.tag = "Dead";
+		// Destroy (transform.gameObject);
+		Destroy (this);
+	}
 }

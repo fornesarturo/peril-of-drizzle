@@ -9,6 +9,7 @@ TagManager:
   - PlayerTag
   - EnemyTag
   - Bullet
+  - Dead
   layers:
   - Default
   - TransparentFX
