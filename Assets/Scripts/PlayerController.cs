@@ -79,6 +79,12 @@ public class PlayerController : MonoBehaviour {
                 jumps = 2;
                 // grounded = true;
                 break;
+			case "EnemyTag":
+				life--;
+				if (life == 0) {
+					Destroy (transform.gameObject);
+				}
+				break;
         }
     }
 
@@ -97,6 +103,12 @@ public class PlayerController : MonoBehaviour {
                 print("Touching Rope");
                 rope = true;
                 break;
+		case "EnemyTag":
+			life--;
+			if (life == 0) {
+				Destroy (transform.gameObject);
+			}
+			break;
         }
     }
 

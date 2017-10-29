@@ -25,8 +25,10 @@ public class FlameController : MonoBehaviour {
             prevClosest = closest;
         }
         
-        if (Vector2.Distance (transform.position, prevClosest.position) > 1f) {
+		if (Vector2.Distance (transform.position, prevClosest.position) > 1f) {
 			transform.position = Vector2.MoveTowards (transform.position, prevClosest.position, speed * Time.deltaTime);
+		} else {
+			Attack ();
 		}
 	}
 		
@@ -41,5 +43,9 @@ public class FlameController : MonoBehaviour {
 			}
 			break;
 		}
+	}
+
+	void Attack() {
+		Debug.Log ("Attack!" + Time.time);
 	}
 }
