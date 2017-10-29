@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - Rope
+  - PlayerTag
+  - EnemyTag
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -17,15 +20,15 @@ TagManager:
   - 
   - Ground
   - Rope
-  - Player
+  - Player1
+  - Player2
+  - Player3
+  - Player4
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - FriendlyBullet
   - 
   - 
   - 
