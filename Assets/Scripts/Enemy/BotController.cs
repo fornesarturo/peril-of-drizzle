@@ -13,8 +13,10 @@ public class BotController : MonoBehaviour {
 	private GameObject prevClosest;
 	private bool attackActive = false;
 	private bool isFar;
+    private Animator animator;
 	// Use this for initialization
 	void Start () {
+        this.animator = this.GetComponent<Animator>();
 	}
 
 	// Update is called once per frame
@@ -27,11 +29,14 @@ public class BotController : MonoBehaviour {
 			prevClosest = closest;
 		}
 		isFar = Vector2.Distance (transform.position, prevClosest.transform.position) > 1f;
-		if (isFar) {
-			transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
+        float direction = (transform.position - prevClosest.transform.position).x;
+        if (isFar) {
+            animator.SetFloat("Speed", -direction);
+            transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
 		} else {
-			if (!attackActive) {
-				StartCoroutine (attackCorroutine (closest));
+            animator.SetFloat("Speed", -direction);
+            if (!attackActive) {
+                StartCoroutine (attackCorroutine (closest));
 				attackActive = true;
 			}
 		}
@@ -59,7 +64,8 @@ public class BotController : MonoBehaviour {
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
 			yield return new WaitForSeconds(1f);
-			Attack (go);
+            animator.SetTrigger("Attack");
+            Attack (go);
 			if (isFar) {
 				attackActive = false;
 				yield break;

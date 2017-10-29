@@ -5,7 +5,7 @@ AnimatorOverrideController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: New Animator Override Controller
+  m_Name: Flam
   m_Controller: {fileID: 9100000, guid: 571900fcaf3390e4bb54e933f786251e, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 25f9d99f379457d4eb98ea7b973cd302, type: 2}

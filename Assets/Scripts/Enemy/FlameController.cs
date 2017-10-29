@@ -13,12 +13,14 @@ public class FlameController : MonoBehaviour {
 	private GameObject prevClosest;
 	private bool attackActive = false;
 	private bool isFar;
+    private Animator animator;
 	// Use this for initialization
 	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        this.animator = this.GetComponent<Animator>();
+    }
+
+    // Update is called once per frame
+    void Update () {
 		players = GameObject.FindGameObjectsWithTag("PlayerTag");
         float maxDistance = players.Min(x => (x.transform.position - this.transform.position).sqrMagnitude);
 		GameObject closest = players.First(x => (x.transform.position - this.transform.position).sqrMagnitude == maxDistance);
@@ -27,15 +29,19 @@ public class FlameController : MonoBehaviour {
             prevClosest = closest;
         }
 		isFar = Vector2.Distance (transform.position, prevClosest.transform.position) > 1f;
-		if (isFar) {
-			transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
-		} else {
-			if (!attackActive) {
-				StartCoroutine (attackCorroutine (closest));
-				attackActive = true;
-			}
-		}
-	}
+        float direction = (transform.position - prevClosest.transform.position).x;
+        if (isFar) {
+            animator.SetFloat("Speed", -direction);
+            transform.position = Vector2.MoveTowards(transform.position, prevClosest.transform.position, speed * Time.deltaTime);
+        }
+        else {
+            animator.SetFloat("Speed", -direction);
+            if (!attackActive) {
+                StartCoroutine(attackCorroutine(closest));
+                attackActive = true;
+            }
+        }
+    }
 		
 	void OnTriggerEnter2D(Collider2D c) {
 		Debug.Log ("Collision");
@@ -59,7 +65,8 @@ public class FlameController : MonoBehaviour {
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
 			yield return new WaitForSeconds(1f);
-			Attack (go);
+            animator.SetTrigger("Attack");
+            Attack (go);
 			if (isFar) {
 				attackActive = false;
 				yield break;

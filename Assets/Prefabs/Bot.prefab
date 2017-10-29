@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114277733310200982}
   - component: {fileID: 61131770849928452}
   - component: {fileID: 50695029678842706}
+  - component: {fileID: 95199823675066546}
   m_Layer: 17
   m_Name: Bot
   m_TagString: EnemyTag
@@ -88,6 +89,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.0730877, y: 1.8}
   m_EdgeRadius: 0
+--- !u!95 &95199823675066546
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1448308272782728}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: ab8324e9b39fae648b78a06f921447ab, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114277733310200982
 MonoBehaviour:
   m_ObjectHideFlags: 1

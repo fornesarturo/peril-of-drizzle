@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114454923331213892}
   - component: {fileID: 50030763421830174}
   - component: {fileID: 70535440714367614}
+  - component: {fileID: 95238413677352542}
   m_Layer: 17
   m_Name: Jelly
   m_TagString: EnemyTag
@@ -78,6 +79,23 @@ CapsuleCollider2D:
   m_Offset: {x: 0.009671211, y: -0.4352131}
   m_Size: {x: 1.0890598, y: 2.994885}
   m_Direction: 0
+--- !u!95 &95238413677352542
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1772038132821328}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 7a19bb99bf9f22e4cbcd49de75e622dd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114454923331213892
 MonoBehaviour:
   m_ObjectHideFlags: 1
