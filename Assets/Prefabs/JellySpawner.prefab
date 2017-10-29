@@ -9,47 +9,47 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1282460477257412}
+  m_RootGameObject: {fileID: 1869542540857278}
   m_IsPrefabParent: 1
---- !u!1 &1282460477257412
+--- !u!1 &1869542540857278
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4041196461599956}
-  - component: {fileID: 114660831123140102}
+  - component: {fileID: 4727653884449020}
+  - component: {fileID: 114103610538177164}
   m_Layer: 0
-  m_Name: FlameSpawner
+  m_Name: JellySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4041196461599956
+--- !u!4 &4727653884449020
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1282460477257412}
+  m_GameObject: {fileID: 1869542540857278}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.8, y: -1.1, z: 0}
+  m_LocalPosition: {x: -7.47, y: 8.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114660831123140102
+--- !u!114 &114103610538177164
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1282460477257412}
+  m_GameObject: {fileID: 1869542540857278}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13adc3c8a2c18bf449de3d5a05d691e5, type: 3}
+  m_Script: {fileID: 11500000, guid: e32361e3bbc22a94daa3667c302d07f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnOfEvil: {fileID: 1214134117465778, guid: be487075ce0a89d48a4dd080b153dee9,
+  spawnOfEvil: {fileID: 1772038132821328, guid: 95cf1b915f4b7d342b669aa4e655f664,
     type: 2}
