@@ -211,6 +211,7 @@ public class PlayerController : MonoBehaviour {
 
 	private void Die() {
 		gameObject.tag = "Dead";
+		animator.SetBool ("Dead", true);
 		// Destroy (transform.gameObject);
 		Destroy (this);
 	}
