@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour {
     private static float climbSpeed = 8f;
     private static Vector2 jumpVector = new Vector2(0, 15.0f);
     private int jumps = 2;
-    // private static bool grounded;
     private bool rope;
     private static float gravity = 4.0f;
 	public int life = 10;
@@ -47,6 +46,27 @@ public class PlayerController : MonoBehaviour {
             float v = Input.GetAxisRaw(verticalControl);
             //float jump = Input.GetAxisRaw(jumpControl);
             //float fire = Input.GetAxisRaw(fireControl);
+
+			// Normalize controller input
+			bool validInput = Mathf.Abs (h) > 0.5f || Mathf.Abs (v) > 0.5f;
+			if (validInput && Mathf.Abs (h) > Mathf.Abs (v)) {
+				if (h > 0) {
+					h = 1;
+					v = 0;
+				} else if (h < 0) {
+					h = -1;
+					v = 0;
+				}
+			} else if (validInput && v > 0) {
+				v = 1;
+				h = 0;
+			} else if (validInput && v < 0) {
+				v = -1;
+				h = 0;
+			} else {
+				h = 0;
+				v = 0;
+			}
 
             animator.SetFloat("Speed", h);
             rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
@@ -89,6 +109,7 @@ public class PlayerController : MonoBehaviour {
 
             // If button x is pressed, shot special
             if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
+				animator.SetTrigger("Special");
                 if (this.characterSpriteNumber == 1) { // if alien
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
@@ -105,7 +126,7 @@ public class PlayerController : MonoBehaviour {
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
                 }
-                else if (this.characterSpriteNumber == 3) { // if n
+                else if (this.characterSpriteNumber == 3) { // if b
                     GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                     GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
@@ -114,7 +135,6 @@ public class PlayerController : MonoBehaviour {
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
                     GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
                 }
-                animator.SetTrigger("Special");
             }
         }
 	}
