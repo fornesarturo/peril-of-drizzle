@@ -105,11 +105,11 @@ MonoBehaviour:
   playerNo: 1
   sprites:
   - {fileID: 21300000, guid: 4de417157f9aa9241a368735a9d2f010, type: 3}
-  - {fileID: 21300000, guid: 2eabe3d5e5302cd4c86aaaf03ac07b24, type: 3}
+  - {fileID: 21300000, guid: 7470d50874826fa4388e6b0bc8907c0a, type: 3}
   - {fileID: 21300000, guid: e0978d0ccd24209409bb4d11b57befd0, type: 3}
   - {fileID: 21300000, guid: e20ce272f9cee004bb635d1fe774153d, type: 3}
   animators:
   - {fileID: 9100000, guid: 571900fcaf3390e4bb54e933f786251e, type: 2}
-  - {fileID: 22100000, guid: ab8324e9b39fae648b78a06f921447ab, type: 2}
+  - {fileID: 22100000, guid: fc50808dfebed884daefc6bdb9cc8d09, type: 2}
   - {fileID: 22100000, guid: 38a37ccd5abbe34479d2b7f60a4425cb, type: 2}
   - {fileID: 22100000, guid: bcc875dfbfd356a499a5f42e63ae7dd3, type: 2}
