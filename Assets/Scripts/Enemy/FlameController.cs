@@ -71,20 +71,31 @@ public class FlameController : MonoBehaviour {
         }
 	}
 
-    void Attack(GameObject go) {
+	bool Attack(GameObject go) {
+		Debug.Log(go.name);
 		if (go != null) {
 			PlayerController pc = go.GetComponent<PlayerController> ();
 			if (pc != null) {
 				pc.life = pc.life - 1;
 			}
+			if(pc.life <= 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
 		}
 	}
 
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
-            animator.SetTrigger("Attack");
-            Attack (go);
-			if (isFar) {
+			animator.SetTrigger("Attack");
+			bool isDead = Attack (go);
+			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.1f;
+			if (isDead || localFar) {
 				attackActive = false;
 				yield break;
 			}
