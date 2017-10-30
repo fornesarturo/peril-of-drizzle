@@ -87,14 +87,14 @@ public class BotController : MonoBehaviour {
         else {
             return false;
         }
-
     }
 
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
             animator.SetTrigger("Attack");
             bool isDead = Attack (go);
-			if (isDead) {
+			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.1f;
+			if (isDead || localFar) {
 				attackActive = false;
 				yield break;
 			}
