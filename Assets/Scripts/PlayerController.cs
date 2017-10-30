@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
 	public GameObject bullet;
+	public GameObject meleeLeft;
+	public GameObject meleeRight;
 	private Rigidbody2D rb2;
 	private static int speed = 10;
     private static float climbSpeed = 8f;
@@ -14,12 +16,15 @@ public class PlayerController : MonoBehaviour {
     private static float gravity = 4.0f;
 	public int life = 10;
 	private int direction = 1;
+	private bool specialWait = false;
+	private bool standardWait = false;
+
+	private const int SPECIAL_WAIT = 0;
+	private const int STANDARD_WAIT = 1;
  
     // Control of character
     public string horizontalControl = "Horizontal_P1";
     public string verticalControl = "Vertical_P1";
-    //public string jumpControl = "Jump_P1";
-    //public string fireControl = "Fire_P1";
     public int playerNo;
 
     public Sprite[] sprites; // Initial sprite array
@@ -41,14 +46,12 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
-		if (life == 0) {
+		if (life <= 0) {
 			Die ();
 		}
         if (selectingPlayer == false) {
             float h = Input.GetAxisRaw(horizontalControl);
             float v = Input.GetAxisRaw(verticalControl);
-            //float jump = Input.GetAxisRaw(jumpControl);
-            //float fire = Input.GetAxisRaw(fireControl);
 
 			// Normalize controller input
 			bool validInput = Mathf.Abs (h) > 0.5f || Mathf.Abs (v) > 0.5f;
@@ -101,90 +104,44 @@ public class PlayerController : MonoBehaviour {
                 jumps = 0;
             }
 
-            // If button b is pressed, shot
+            // Button 'b' is pressed: STANDARD ATTACK.
             if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
-                if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if range
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                }
-                animator.SetTrigger("Attack");
+				if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if character with ranged attack
+					if (!standardWait) {
+						animator.SetTrigger("Attack");
+						standardWait = true;
+						GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
+						bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
+						StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
+					}
+				} else {
+					animator.SetTrigger("Attack");
+					if (direction > 0) {
+						GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+						StartCoroutine (WaitToDestroy (0.2f, meleeClone));
+					} else {
+						GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+						StartCoroutine (WaitToDestroy (0.2f, meleeClone));
+					}
+
+				}
             }
 
-            // If button x is pressed, shot special
+            // Button 'x' is pressed: SPECIAL.
             if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
-				animator.SetTrigger("Special");
-				if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                    GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(-direction * 40, 0), ForceMode2D.Impulse);
-                }
-                else if (this.characterSpriteNumber == 0) { // if bob
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                    GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
-                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                }
-                else if (this.characterSpriteNumber == 2) { // if rebecca
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-                }
-                else if (this.characterSpriteNumber == 3) { // if tyronne
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                    GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
-                    bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                    GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
-                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-                    GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-                }
+				if (!specialWait) {
+					Special ();
+					specialWait = true;
+					StartCoroutine (Cooldown (4f, SPECIAL_WAIT));
+				}
             }
         }
 	}
-
-    private IEnumerator selectCharacter() {
-        this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
-        this.animator = this.gameObject.AddComponent<Animator>();
-        this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-        this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-        while (this.selectingPlayer == true) {
-            if (Input.GetKeyDown("joystick " + this.playerNo + " button 5" ) || Input.GetKeyDown(KeyCode.H)) {
-                print("right!");
-                this.characterSpriteNumber = (this.characterSpriteNumber + 1) % 4;
-                this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-                this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-            }
-            else if (Input.GetKeyDown("joystick " + this.playerNo + " button 4") || Input.GetKeyDown(KeyCode.G)) {
-                print("left!");
-                this.characterSpriteNumber--;
-                if (this.characterSpriteNumber == -1) {
-                    this.characterSpriteNumber = 3;
-                }
-                this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-                this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-            }
-            else if (Input.GetKeyDown("joystick " + this.playerNo + " button 0") || Input.GetKeyDown(KeyCode.Y)) {
-                this.selectingPlayer = false;
-                yield break;
-            }
-            yield return null;
-        }
-    }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         switch (collision.transform.tag) {
             case "Ground":
                 jumps = 2;
-                // grounded = true;
-                break;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision) {
-        switch (collision.transform.tag) {
-            case "Ground":
-                print("Not Grounded");
-                // grounded = false;
                 break;
         }
     }
@@ -192,7 +149,6 @@ public class PlayerController : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision) {
         switch(collision.transform.tag) {
 		case "Rope":
-			print("Touching Rope");
 			rope = true;
 			break;
         }
@@ -214,5 +170,85 @@ public class PlayerController : MonoBehaviour {
 		animator.SetBool ("Dead", true);
 		// Destroy (transform.gameObject);
 		Destroy (this);
+	}
+
+	private void Special() {
+		animator.SetTrigger("Special");
+		if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
+			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(-direction * 40, 0), ForceMode2D.Impulse);
+		}
+		else if (this.characterSpriteNumber == 0) { // if bob
+			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+		}
+		else if (this.characterSpriteNumber == 2) { // if rebecca
+			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+		}
+		else if (this.characterSpriteNumber == 3) { // if tyronne
+			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
+			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (0.5f, bulletClone2));
+			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (0.5f, bulletClone3));
+			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+			bulletClone4.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (0.5f, bulletClone4));
+		}
+	}
+
+	private IEnumerator selectCharacter() {
+		this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+		this.animator = this.gameObject.AddComponent<Animator>();
+		this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+		this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+		while (this.selectingPlayer == true) {
+			if (Input.GetKeyDown("joystick " + this.playerNo + " button 5" ) || Input.GetKeyDown(KeyCode.H)) {
+				this.characterSpriteNumber = (this.characterSpriteNumber + 1) % 4;
+				this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+				this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+			}
+			else if (Input.GetKeyDown("joystick " + this.playerNo + " button 4") || Input.GetKeyDown(KeyCode.G)) {
+				this.characterSpriteNumber--;
+				if (this.characterSpriteNumber == -1) {
+					this.characterSpriteNumber = 3;
+				}
+				this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+				this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+			}
+			else if (Input.GetKeyDown("joystick " + this.playerNo + " button 0") || Input.GetKeyDown(KeyCode.Y)) {
+				this.selectingPlayer = false;
+				yield break;
+			}
+			yield return null;
+		}
+	}
+
+	private IEnumerator Cooldown(float seconds, int typeOfWait) {
+		yield return new WaitForSeconds (seconds);
+		switch (typeOfWait) {
+		case SPECIAL_WAIT:
+			specialWait = false;
+			break;
+		case STANDARD_WAIT:
+			standardWait = false;
+			break;
+		}
+		Debug.Log ("Player " + playerNo + "\'s special ready! (" + Time.time + ")");
+		yield break;
+	}
+
+	private IEnumerator WaitToDestroy(float seconds, GameObject go) {
+		yield return new WaitForSeconds (seconds);
+		Destroy (go);
 	}
 }

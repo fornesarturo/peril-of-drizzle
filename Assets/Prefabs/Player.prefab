@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 1349813906570002, guid: 4ca615492a7d43a4996fc0d8d3b095d6, type: 2}
+  meleeLeft: {fileID: 1619519821387448, guid: 2474df4d198b7214cb33414a10453be6, type: 2}
+  meleeRight: {fileID: 1336571159009960, guid: 625d8f39551467a4095af2cbdaad9544, type: 2}
   life: 10
   horizontalControl: Horizontal_P1
   verticalControl: Vertical_P1
