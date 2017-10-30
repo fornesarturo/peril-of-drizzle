@@ -8,7 +8,7 @@ public class BotController : MonoBehaviour {
 
 	public GameObject[] players;
 	private static int speed = 5;
-	private static int life = 100;
+	public int life = 100;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;
@@ -29,16 +29,16 @@ public class BotController : MonoBehaviour {
 			if(closest != prevClosest) {
 				prevClosest = closest;
 			}
-			isFar = Vector2.Distance (transform.position, prevClosest.transform.position) > 1f;
+			isFar = Vector2.Distance (transform.position, closest.transform.position) > 1.1f;
 			float direction = (transform.position - prevClosest.transform.position).x;
 			if (isFar) {
 				animator.SetFloat("Speed", -direction);
 				transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
 			} else {
-				animator.SetFloat("Speed", -direction);
+				animator.SetFloat("Speed", 0);
 				if (!attackActive) {
-					StartCoroutine (attackCorroutine (closest));
-					attackActive = true;
+                    attackActive = true;
+                    StartCoroutine (attackCorroutine (closest));
 				}
 			}
 		}
@@ -64,23 +64,37 @@ public class BotController : MonoBehaviour {
 			}
 			StartCoroutine(hitCorroutine (0.2f));
 			break;
-		}
+        case "Border":
+            Destroy(transform.gameObject);
+            break;
+        }
 	}
 
-	void Attack(GameObject go) {
+    bool Attack(GameObject go) {
+        Debug.Log(go.name);
 		if (go != null) {
 			PlayerController pc = go.GetComponent<PlayerController> ();
 			if (pc != null) {
 				pc.life = pc.life - 2;
 			}
-		}
-	}
+            if(pc.life <= 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+    }
 
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
             animator.SetTrigger("Attack");
-            Attack (go);
-			if (isFar) {
+            bool isDead = Attack (go);
+			if (isDead) {
 				attackActive = false;
 				yield break;
 			}

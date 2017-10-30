@@ -65,10 +65,13 @@ public class FlameController : MonoBehaviour {
 			}
 			StartCoroutine(hitCorroutine (0.2f));
 			break;
-		}
+        case "Border":
+            Destroy(transform.gameObject);
+            break;
+        }
 	}
 
-	void Attack(GameObject go) {
+    void Attack(GameObject go) {
 		if (go != null) {
 			PlayerController pc = go.GetComponent<PlayerController> ();
 			if (pc != null) {

@@ -151,6 +151,9 @@ public class PlayerController : MonoBehaviour {
 		case "Rope":
 			rope = true;
 			break;
+        case "Border":
+            Destroy(transform.gameObject);
+            break;
         }
     }
 
@@ -161,6 +164,9 @@ public class PlayerController : MonoBehaviour {
                 Physics2D.IgnoreLayerCollision(gameObject.layer, 8, false);
                 rb2.gravityScale = gravity;
                 jumps = 1;
+                break;
+            case "Border":
+                Destroy(transform.gameObject);
                 break;
         }
     }
