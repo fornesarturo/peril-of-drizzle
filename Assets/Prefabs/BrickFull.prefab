@@ -21,9 +21,9 @@ GameObject:
   - component: {fileID: 4986890883322124}
   - component: {fileID: 212701176918509166}
   - component: {fileID: 68632665795726884}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BrickFull
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
