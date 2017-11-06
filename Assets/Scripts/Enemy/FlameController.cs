@@ -72,7 +72,6 @@ public class FlameController : MonoBehaviour {
 	}
 
 	bool Attack(GameObject go) {
-		Debug.Log(go.name);
 		if (go != null) {
 			PlayerController pc = go.GetComponent<PlayerController> ();
 			if (pc != null) {
