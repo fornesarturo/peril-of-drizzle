@@ -8,11 +8,13 @@ public class CameraScript : MonoBehaviour {
 	private int current = 0;
 	private int prevLength;
 	private Vector3 offset;
+	private Camera cam;
 	// Use this for initialization
 	void Start () {
 		players = GameObject.FindGameObjectsWithTag ("PlayerTag");
 		prevLength = players.Length;
-        offset = offset = transform.position - players[0].transform.position;
+        offset = transform.position - players[0].transform.position;
+		cam = GetComponent<Camera>();
     }
 	
 	// Update is called once per frame
@@ -27,6 +29,7 @@ public class CameraScript : MonoBehaviour {
 		}
         else {
             transform.position = players[0].transform.position + offset;
+			cam.orthographicSize = 5f;
         }
 	}
 
@@ -53,7 +56,6 @@ public class CameraScript : MonoBehaviour {
         if (distance > 40) {
             distance = 40f;
         }
-        Camera cam = this.GetComponent<Camera>();
         Vector3 cameraDest = middle - cam.transform.forward * distance * zoom;
         if (cam.orthographic) {
             cam.orthographicSize = distance;
