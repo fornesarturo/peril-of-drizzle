@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     private int jumps = 2;
     private bool rope;
     private static float gravity = 4.0f;
-	public int life = 10;
+	public int life;
 	private int direction = 1;
 	private bool specialWait = false;
 	private bool standardWait = false;
@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour {
 
     public Sprite[] sprites; // Initial sprite array
     private SpriteRenderer spriteRenderer; // Load sprite
-    private bool selectingPlayer; // true while selecting player
     private int characterSpriteNumber; // default to player number
     public RuntimeAnimatorController[] animators; // Initial animator array
     private Animator animator; // Load animator
@@ -37,104 +36,110 @@ public class PlayerController : MonoBehaviour {
     private void Awake() {
         rb2 = GetComponent<Rigidbody2D> ();
         rb2.gravityScale = gravity;
-        this.characterSpriteNumber = this.playerNo - 1;
+		this.characterSpriteNumber = PlayerPrefs.GetInt("PlayerSprite" + this.playerNo);
+		if (this.characterSpriteNumber == -1) {
+			Destroy (gameObject);
+		} else {
+			this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+			this.animator = this.gameObject.AddComponent<Animator>();
+			this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
+			this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
+		}
     }
 
     void Start () {
-        this.selectingPlayer = true;
-        StartCoroutine(this.selectCharacter());
+		this.life = PlayerPrefs.GetInt ("PlayerLife" + this.playerNo);
 	}
 
 	void Update () {
 		if (life <= 0) {
+			PlayerPrefs.SetInt ("PlayerLife" + this.playerNo, 0);
 			Die ();
 		}
-        if (selectingPlayer == false) {
-            float h = Input.GetAxisRaw(horizontalControl);
-            float v = Input.GetAxisRaw(verticalControl);
+        float h = Input.GetAxisRaw(horizontalControl);
+        float v = Input.GetAxisRaw(verticalControl);
 
-			// Normalize controller input
-			bool validInput = Mathf.Abs (h) > 0.5f || Mathf.Abs (v) > 0.5f;
-			if (validInput && Mathf.Abs (h) > Mathf.Abs (v)) {
-				if (h > 0) {
-					h = 1;
-					v = 0;
-				} else if (h < 0) {
-					h = -1;
-					v = 0;
-				}
-			} else if (validInput && v > 0) {
-				v = 1;
-				h = 0;
-			} else if (validInput && v < 0) {
-				v = -1;
-				h = 0;
-			} else {
-				h = 0;
+		// Normalize controller input
+		bool validInput = Mathf.Abs (h) > 0.5f || Mathf.Abs (v) > 0.5f;
+		if (validInput && Mathf.Abs (h) > Mathf.Abs (v)) {
+			if (h > 0) {
+				h = 1;
+				v = 0;
+			} else if (h < 0) {
+				h = -1;
 				v = 0;
 			}
+		} else if (validInput && v > 0) {
+			v = 1;
+			h = 0;
+		} else if (validInput && v < 0) {
+			v = -1;
+			h = 0;
+		} else {
+			h = 0;
+			v = 0;
+		}
 
-            animator.SetFloat("Speed", h);
-            rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
+        animator.SetFloat("Speed", h);
+        rb2.velocity = new Vector2(h * speed, rb2.velocity.y);
 
-            if (h > 0) {
-                direction = 1;
+        if (h > 0) {
+            direction = 1;
+        }
+        else if (h < 0) {
+            direction = -1;
+        }
+
+        // If button a is pressed, jump
+        if (Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
+            if (jumps > 0) {
+                jumps--;
+                rb2.velocity = new Vector2(rb2.velocity.x, 0);
+                rb2.AddForce(jumpVector, ForceMode2D.Impulse);
             }
-            else if (h < 0) {
-                direction = -1;
-            }
+        }
 
-            // If button a is pressed, jump
-            if (Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
-                if (jumps > 0) {
-                    jumps--;
-                    rb2.velocity = new Vector2(rb2.velocity.x, 0);
-                    rb2.AddForce(jumpVector, ForceMode2D.Impulse);
-                }
-            }
+        // Go up rope
+        if (rope && Mathf.Abs(v) > 0) {
 
-            // Go up rope
-            if (rope && Mathf.Abs(v) > 0) {
+            rb2.gravityScale = 0;
+            rb2.velocity = new Vector2();
+            rb2.position = new Vector2(rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
+            Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
+            // grounded = false;
+            jumps = 0;
+        }
 
-                rb2.gravityScale = 0;
-                rb2.velocity = new Vector2();
-                rb2.position = new Vector2(rb2.position.x, rb2.position.y + (v * climbSpeed * Time.deltaTime));
-                Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true);
-                // grounded = false;
-                jumps = 0;
-            }
-
-            // Button 'b' is pressed: STANDARD ATTACK.
-            if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
-				if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if character with ranged attack
-					if (!standardWait) {
-						animator.SetTrigger("Attack");
-						standardWait = true;
-						GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
-						bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
-						StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
-					}
-				} else {
+        // Button 'b' is pressed: STANDARD ATTACK.
+        if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
+			if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if character with ranged attack
+				if (!standardWait) {
 					animator.SetTrigger("Attack");
-					if (direction > 0) {
-						GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
-						StartCoroutine (WaitToDestroy (0.2f, meleeClone));
-					} else {
-						GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
-						StartCoroutine (WaitToDestroy (0.2f, meleeClone));
-					}
-
+					standardWait = true;
+					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
+					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
+					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
-            }
-
-            // Button 'x' is pressed: SPECIAL.
-            if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
-				if (!specialWait) {
-					Special ();
-					specialWait = true;
-					StartCoroutine (Cooldown (4f, SPECIAL_WAIT));
+			} else {
+				animator.SetTrigger("Attack");
+				if (direction > 0) {
+					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
+				} else {
+					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
 				}
-            }
+
+			}
+        }
+
+        // Button 'x' is pressed: SPECIAL.
+        if (Input.GetKeyDown("joystick " + playerNo + " button 2") || Input.GetKeyDown(KeyCode.LeftAlt)) {
+			if (!specialWait) {
+				Special ();
+				specialWait = true;
+				StartCoroutine (Cooldown (4f, SPECIAL_WAIT));
+			}
         }
 	}
 
@@ -209,33 +214,6 @@ public class PlayerController : MonoBehaviour {
 			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone4.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone4));
-		}
-	}
-
-	private IEnumerator selectCharacter() {
-		this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
-		this.animator = this.gameObject.AddComponent<Animator>();
-		this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-		this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-		while (this.selectingPlayer == true) {
-			if (Input.GetKeyDown("joystick " + this.playerNo + " button 5" ) || Input.GetKeyDown(KeyCode.H)) {
-				this.characterSpriteNumber = (this.characterSpriteNumber + 1) % 4;
-				this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-				this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-			}
-			else if (Input.GetKeyDown("joystick " + this.playerNo + " button 4") || Input.GetKeyDown(KeyCode.G)) {
-				this.characterSpriteNumber--;
-				if (this.characterSpriteNumber == -1) {
-					this.characterSpriteNumber = 3;
-				}
-				this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
-				this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
-			}
-			else if (Input.GetKeyDown("joystick " + this.playerNo + " button 0") || Input.GetKeyDown(KeyCode.Y)) {
-				this.selectingPlayer = false;
-				yield break;
-			}
-			yield return null;
 		}
 	}
 
