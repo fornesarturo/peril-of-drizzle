@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     private int jumps = 2;
     private bool rope;
     private static float gravity = 4.0f;
-	public int life = 10;
+	public int life;
 	private int direction = 1;
 	private bool specialWait = false;
 	private bool standardWait = false;
@@ -48,11 +48,12 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Start () {
-		
+		this.life = PlayerPrefs.GetInt ("PlayerLife" + this.playerNo);
 	}
 
 	void Update () {
 		if (life <= 0) {
+			PlayerPrefs.SetInt ("PlayerLife" + this.playerNo, 0);
 			Die ();
 		}
         float h = Input.GetAxisRaw(horizontalControl);

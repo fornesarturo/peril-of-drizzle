@@ -20,6 +20,10 @@ public class CharacterSelect : MonoBehaviour {
 		PlayerPrefs.SetInt ("PlayerSprite2", -1);
 		PlayerPrefs.SetInt ("PlayerSprite3", -1);
 		PlayerPrefs.SetInt ("PlayerSprite4", -1);
+		PlayerPrefs.SetInt ("PlayerLife1", -1);
+		PlayerPrefs.SetInt ("PlayerLife2", -1);
+		PlayerPrefs.SetInt ("PlayerLife3", -1);
+		PlayerPrefs.SetInt ("PlayerLife4", -1);
 	}
 	
 	// Update is called once per frame
@@ -35,14 +39,16 @@ public class CharacterSelect : MonoBehaviour {
 				}
 				this.spriteRenderer.sprite = this.sprites [this.characterSpriteNumber];
 			} else if (Input.GetKeyDown ("joystick " + this.playerNo + " button 0") || Input.GetKeyDown (KeyCode.Y)) {
-				PlayerPrefs.SetInt ("PlayerSprite" + this.playerNo, this.characterSpriteNumber);
 				this.spriteRenderer.sprite = this.spritesSelected[this.characterSpriteNumber];
 				this.selectCharacter = false;
+				PlayerPrefs.SetInt ("PlayerSprite" + this.playerNo, this.characterSpriteNumber);
+				PlayerPrefs.SetInt ("PlayerLife" + this.playerNo, 20);
 			}
 		} else {
 			if (Input.GetKeyDown ("joystick " + this.playerNo + " button 1")) {
 				this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
 				PlayerPrefs.SetInt ("PlayerSprite" + this.playerNo, -1);
+				PlayerPrefs.SetInt ("PlayerLife" + this.playerNo, -1);
 				this.selectCharacter = true;
 			}
 			if (Input.GetKeyDown ("joystick " + this.playerNo + " button 7")) {
