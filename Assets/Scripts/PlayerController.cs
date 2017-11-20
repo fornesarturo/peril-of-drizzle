@@ -159,6 +159,27 @@ public class PlayerController : MonoBehaviour {
         case "Border":
             Destroy(transform.gameObject);
             break;
+		case "FlameAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			life--;
+			break;
+		case "JellyAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			life--;
+			break;
+		case "BotAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			life -= 2;
+			break;
         }
     }
 
@@ -175,6 +196,17 @@ public class PlayerController : MonoBehaviour {
                 break;
         }
     }
+
+	public void Knockback(float direction) {
+		Debug.Log ("Knockback Magnitude: " + direction);
+		float magnitude = 10;
+		float xMagnitude = 10;
+		if (direction < 0) {
+			xMagnitude = magnitude * -1;
+		}
+		rb2.AddForce (new Vector2 (0, magnitude), ForceMode2D.Impulse);
+		rb2.AddForce (new Vector2 (xMagnitude, 0), ForceMode2D.Impulse);
+	}
 
 	private void Die() {
 		gameObject.tag = "Dead";
