@@ -12,6 +12,9 @@ TagManager:
   - Dead
   - Melee
   - Border
+  - FlameAttack
+  - JellyAttack
+  - BotAttack
   layers:
   - Default
   - TransparentFX
@@ -32,9 +35,9 @@ TagManager:
   - 
   - Enemy
   - FriendlyBullet
-  - 
-  - 
-  - 
+  - FlameAttack
+  - JellyAttack
+  - BotAttack
   - 
   - 
   - 
