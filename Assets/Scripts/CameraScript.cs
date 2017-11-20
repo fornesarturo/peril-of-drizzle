@@ -5,7 +5,6 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour {
 
 	private GameObject[] players;
-	private int current = 0;
 	private int prevLength;
 	private Vector3 offset;
 	private Camera cam;
@@ -24,8 +23,11 @@ public class CameraScript : MonoBehaviour {
 			players = tempPlayers;
             prevLength = players.Length;
 		}
+		Debug.Log ("TempPlayers=" + tempPlayers.ToString());
 		if (players.Length > 1) {
-            FixedCamera();
+			FixedCamera ();
+		} else if (players.Length == 0) {
+			Debug.Log("Doneso.");
 		}
         else {
             transform.position = players[0].transform.position + offset;

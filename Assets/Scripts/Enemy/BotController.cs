@@ -13,10 +13,14 @@ public class BotController : MonoBehaviour {
 	private GameObject prevClosest;
 	private bool attackActive = false;
 	private bool isFar;
+	private float direction;
     private Animator animator;
+	private GameObject attackHitbox;
 	// Use this for initialization
 	void Start () {
         this.animator = this.GetComponent<Animator>();
+		this.attackHitbox = transform.GetChild (0).gameObject;
+		this.attackHitbox.SetActive (false);
 	}
 
 	// Update is called once per frame
@@ -30,7 +34,7 @@ public class BotController : MonoBehaviour {
 				prevClosest = closest;
 			}
 			isFar = Vector2.Distance (transform.position, closest.transform.position) > 1.1f;
-			float direction = (transform.position - prevClosest.transform.position).x;
+			direction = (transform.position - prevClosest.transform.position).x;
 			if (isFar) {
 				animator.SetFloat("Speed", -direction);
 				transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
@@ -70,35 +74,19 @@ public class BotController : MonoBehaviour {
         }
 	}
 
-    bool Attack(GameObject go) {
-        Debug.Log(go.name);
-		if (go != null) {
-			PlayerController pc = go.GetComponent<PlayerController> ();
-			if (pc != null) {
-				pc.life = pc.life - 2;
-			}
-            if(pc.life <= 0) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
 	IEnumerator attackCorroutine(GameObject go) {
 		while (true) {
-            animator.SetTrigger("Attack");
-            bool isDead = Attack (go);
-			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.1f;
-			if (isDead || localFar) {
+			this.attackHitbox.SetActive (true);
+			animator.SetTrigger("Attack");
+			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.0f;
+			if (localFar) {
 				attackActive = false;
+				this.attackHitbox.SetActive (false);
 				yield break;
 			}
-			yield return new WaitForSeconds(3f);
+			yield return new WaitForSeconds (0.2f);
+			this.attackHitbox.SetActive (false);
+			yield return new WaitForSeconds(1f);
 		}
 	}
 
