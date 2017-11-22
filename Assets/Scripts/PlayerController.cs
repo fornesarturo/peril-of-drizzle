@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour {
 
 	private const int SPECIAL_WAIT = 0;
 	private const int STANDARD_WAIT = 1;
- 
+
     // Control of character
     public string horizontalControl = "Horizontal_P1";
     public string verticalControl = "Vertical_P1";

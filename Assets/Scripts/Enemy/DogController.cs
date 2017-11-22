@@ -17,6 +17,12 @@ public class DogController : MonoBehaviour {
 	private Animator animator;
 	public GameObject closeRangeAttack;
 	public GameObject farRangeAttack;
+
+	private GameObject closeCloneA;
+	private GameObject closeCloneB;
+	private GameObject closeCloneC;
+	private GameObject farCloneA;
+	private GameObject farCloneB;
 	// Use this for initialization
 	void Start () {
 		this.animator = this.GetComponent<Animator>();
@@ -63,6 +69,11 @@ public class DogController : MonoBehaviour {
 			Destroy (c.transform.gameObject);
 			life--;
 			if (life <= 0) {
+				Destroy (closeCloneA);
+				Destroy (closeCloneB);
+				Destroy (closeCloneC);
+				Destroy (farCloneA);
+				Destroy (farCloneB);
 				Destroy (transform.gameObject);
 				break;
 			}
@@ -79,9 +90,9 @@ public class DogController : MonoBehaviour {
 		if (direction > 0) {
 			looking = -1;
 		}
-		GameObject closeCloneA = Instantiate (closeRangeAttack, transform.position + (new Vector3(5 * looking, -1.5f, 0)), transform.rotation) as GameObject;
-		GameObject closeCloneB = Instantiate (closeRangeAttack, transform.position + (new Vector3(10 * looking, -1.5f, 0)), transform.rotation) as GameObject;
-		GameObject closeCloneC = Instantiate (closeRangeAttack, transform.position + (new Vector3(15 * looking, -1.5f, 0)), transform.rotation) as GameObject;
+		closeCloneA = Instantiate (closeRangeAttack, transform.position + (new Vector3(5 * looking, -1.5f, 0)), transform.rotation, transform) as GameObject;
+		closeCloneB = Instantiate (closeRangeAttack, transform.position + (new Vector3(10 * looking, -1.5f, 0)), transform.rotation, transform) as GameObject;
+		closeCloneC = Instantiate (closeRangeAttack, transform.position + (new Vector3(15 * looking, -1.5f, 0)), transform.rotation, transform) as GameObject;
 		yield return new WaitForSeconds(1f);
 		Destroy (closeCloneA);
 		Destroy (closeCloneB);
@@ -90,9 +101,9 @@ public class DogController : MonoBehaviour {
 	}
 
 	private IEnumerator farRange() {
-		GameObject farCloneA = Instantiate (farRangeAttack, transform.position + (new Vector3(3, -1f, 0)), transform.rotation) as GameObject;
+		farCloneA = Instantiate (farRangeAttack, transform.position + (new Vector3(3, -1f, 0)), transform.rotation, transform) as GameObject;
 		farCloneA.GetComponent<Rigidbody2D> ().AddForce (new Vector2(-20, 0), ForceMode2D.Impulse);
-		GameObject farCloneB = Instantiate (farRangeAttack, transform.position + (new Vector3(-3, -1f, 0)), transform.rotation) as GameObject;
+		farCloneB = Instantiate (farRangeAttack, transform.position + (new Vector3(-3, -1f, 0)), transform.rotation, transform) as GameObject;
 		farCloneB.GetComponent<Rigidbody2D> ().AddForce (new Vector2(20, 0), ForceMode2D.Impulse);
 		yield return new WaitForSeconds(3f);
 		Destroy (farCloneA);
