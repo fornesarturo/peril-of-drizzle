@@ -264,22 +264,14 @@ public class PlayerController : MonoBehaviour {
 		animator.SetTrigger("Special");
         StartCoroutine(Cooldown(maxSpecialTime, SPECIAL_WAIT));
         if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
-<<<<<<< HEAD
             PlaySound(6);
             GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation) as GameObject;
-=======
-			GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation, transform) as GameObject;
->>>>>>> refs/remotes/origin/multi-feature-set
             StartCoroutine(WaitToDestroy(0.2f, healClone));
             StartCoroutine(Heal(3));
 		}
 		else if (this.characterSpriteNumber == 0) { // if bob
-<<<<<<< HEAD
             PlaySound(2);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-=======
-            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
->>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (1f, bulletClone));
 
@@ -288,12 +280,8 @@ public class PlayerController : MonoBehaviour {
 			StartCoroutine (WaitToDestroy (1f, bulletClone2));
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
-<<<<<<< HEAD
             PlaySound(3);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-=======
-            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
->>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (2f, bulletClone));
 
@@ -306,12 +294,8 @@ public class PlayerController : MonoBehaviour {
 			StartCoroutine (WaitToDestroy (2f, bulletClone3));
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
-<<<<<<< HEAD
             PlaySound(4);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-=======
-            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
->>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
 
@@ -380,8 +364,7 @@ public class PlayerController : MonoBehaviour {
         yield break;
     }
 
-    void PlaySound (int clip)
-    {
+    void PlaySound (int clip) {
         print("Sound: " + clip);
         AudioSource audioS = this.GetComponent<AudioSource>();
         audioS.clip = audioClip[clip];
