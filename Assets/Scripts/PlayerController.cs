@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour {
 
 	private const int SPECIAL_WAIT = 0;
 	private const int STANDARD_WAIT = 1;
+
+    public AudioClip[] audioClip;
  
     // Control of character
     public string horizontalControl = "Horizontal_P1";
@@ -104,6 +106,7 @@ public class PlayerController : MonoBehaviour {
         // If button a is pressed, jump
         if (Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
             if (jumps > 0) {
+                PlaySound(0);
                 jumps--;
                 rb2.velocity = new Vector2(rb2.velocity.x, 0);
                 rb2.AddForce(jumpVector, ForceMode2D.Impulse);
@@ -125,14 +128,16 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
 			if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if character with ranged attack
 				if (!standardWait) {
-					animator.SetTrigger("Attack");
+                    PlaySound(1);
+                    animator.SetTrigger("Attack");
 					standardWait = true;
 					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
 					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
 					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
 			} else {
-				animator.SetTrigger("Attack");
+                PlaySound(5);
+                animator.SetTrigger("Attack");
 				if (direction > 0) {
 					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
 					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
@@ -233,7 +238,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void Die() {
-		gameObject.tag = "Dead";
+        PlaySound(7);
+        gameObject.tag = "Dead";
 		animator.SetBool ("Dead", true);
         Destroy(this.transform.Find("PlayerCanvas").gameObject);
 		// Destroy (transform.gameObject);
@@ -244,21 +250,25 @@ public class PlayerController : MonoBehaviour {
 		animator.SetTrigger("Special");
         StartCoroutine(Cooldown(maxSpecialTime, SPECIAL_WAIT));
         if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
+            PlaySound(6);
             GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation) as GameObject;
             StartCoroutine(WaitToDestroy(0.2f, healClone));
             StartCoroutine(Heal(3));
 		}
 		else if (this.characterSpriteNumber == 0) { // if bob
+            PlaySound(2);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
+            PlaySound(3);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
+            PlaySound(4);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
@@ -323,5 +333,13 @@ public class PlayerController : MonoBehaviour {
             }
         }
         yield break;
+    }
+
+    void PlaySound (int clip)
+    {
+        print("Sound: " + clip);
+        AudioSource audioS = this.GetComponent<AudioSource>();
+        audioS.clip = audioClip[clip];
+        audioS.Play();
     }
 }
