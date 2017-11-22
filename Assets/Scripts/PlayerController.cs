@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
 	public GameObject bullet;
 	public GameObject meleeLeft;
 	public GameObject meleeRight;
+    public GameObject healRadius;
 	private Rigidbody2D rb2;
 	private static int speed = 10;
     private static float climbSpeed = 8f;
@@ -15,12 +17,18 @@ public class PlayerController : MonoBehaviour {
     private bool rope;
     private static float gravity = 4.0f;
 	public int life;
+    private Image healthBar;
+    private Image specialBar;
+    private float maxSpecialTime;
+    private int maxLife = 20;
 	private int direction = 1;
 	private bool specialWait = false;
 	private bool standardWait = false;
 
 	private const int SPECIAL_WAIT = 0;
 	private const int STANDARD_WAIT = 1;
+
+    public AudioClip[] audioClip;
  
     // Control of character
     public string horizontalControl = "Horizontal_P1";
@@ -49,7 +57,12 @@ public class PlayerController : MonoBehaviour {
 
     void Start () {
 		this.life = PlayerPrefs.GetInt ("PlayerLife" + this.playerNo);
-	}
+        this.healthBar = this.transform.Find("PlayerCanvas").Find("HealthBG").Find("Health").GetComponent<Image>();
+        this.healthBar.fillAmount = (float)this.life / (float)this.maxLife;
+        this.maxSpecialTime = (this.characterSpriteNumber == 1) ? 6f : 4f;
+        this.specialBar = this.transform.Find("PlayerCanvas").Find("SpecialBG").Find("Special").GetComponent<Image>();
+        this.specialBar.fillAmount = (float)this.maxSpecialTime;
+    }
 
 	void Update () {
 		if (life <= 0) {
@@ -93,6 +106,7 @@ public class PlayerController : MonoBehaviour {
         // If button a is pressed, jump
         if (Input.GetKeyDown("joystick " + playerNo + " button 0") || Input.GetKeyDown(KeyCode.Space)) {
             if (jumps > 0) {
+                PlaySound(0);
                 jumps--;
                 rb2.velocity = new Vector2(rb2.velocity.x, 0);
                 rb2.AddForce(jumpVector, ForceMode2D.Impulse);
@@ -114,19 +128,21 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown("joystick " + playerNo + " button 1") || Input.GetKeyDown(KeyCode.LeftControl)) {
 			if (this.characterSpriteNumber == 0 || this.characterSpriteNumber == 1) { // if character with ranged attack
 				if (!standardWait) {
-					animator.SetTrigger("Attack");
+                    PlaySound(1);
+                    animator.SetTrigger("Attack");
 					standardWait = true;
-					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
+					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation, transform) as GameObject;
 					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
 					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
 			} else {
-				animator.SetTrigger("Attack");
+                PlaySound(5);
+                animator.SetTrigger("Attack");
 				if (direction > 0) {
-					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
 					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
 				} else {
-					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
 					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
 				}
 
@@ -138,7 +154,6 @@ public class PlayerController : MonoBehaviour {
 			if (!specialWait) {
 				Special ();
 				specialWait = true;
-				StartCoroutine (Cooldown (4f, SPECIAL_WAIT));
 			}
         }
 	}
@@ -149,6 +164,12 @@ public class PlayerController : MonoBehaviour {
                 jumps = 2;
                 break;
         }
+    }
+
+    private void DoDamage(int l) {
+        life -= l;
+        healthBar.fillAmount = (float)this.life / (float)this.maxLife;
+        PlayerPrefs.SetInt("PlayerLife" + this.playerNo, life);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -164,21 +185,43 @@ public class PlayerController : MonoBehaviour {
 				Knockback (1);
 			else
 				Knockback (-1);
-			life--;
+			DoDamage(1);
 			break;
 		case "JellyAttack":
 			if ((transform.position - collision.transform.position).x < 0)
 				Knockback (1);
 			else
 				Knockback (-1);
-			life--;
+			DoDamage(1);
 			break;
 		case "BotAttack":
 			if ((transform.position - collision.transform.position).x < 0)
 				Knockback (1);
 			else
 				Knockback (-1);
-			life -= 2;
+			DoDamage(2);
+			break;
+        case "BotBullet":
+            Destroy (collision.transform.gameObject);
+            if ((transform.position - collision.transform.position).x < 0)
+                Knockback(1);
+            else
+                Knockback(-1);
+            DoDamage(1);
+            break;
+		case "DogFarAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (3);
+			break;
+		case "DogCloseAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (4);
 			break;
         }
     }
@@ -209,53 +252,96 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void Die() {
-		gameObject.tag = "Dead";
+        PlaySound(7);
+        gameObject.tag = "Dead";
 		animator.SetBool ("Dead", true);
+        Destroy(this.transform.Find("PlayerCanvas").gameObject);
 		// Destroy (transform.gameObject);
 		Destroy (this);
 	}
 
 	private void Special() {
 		animator.SetTrigger("Special");
-		if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
-			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(-direction * 40, 0), ForceMode2D.Impulse);
+        StartCoroutine(Cooldown(maxSpecialTime, SPECIAL_WAIT));
+        if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
+<<<<<<< HEAD
+            PlaySound(6);
+            GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation) as GameObject;
+=======
+			GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
+            StartCoroutine(WaitToDestroy(0.2f, healClone));
+            StartCoroutine(Heal(3));
 		}
 		else if (this.characterSpriteNumber == 0) { // if bob
-			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+<<<<<<< HEAD
+            PlaySound(2);
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+			StartCoroutine (WaitToDestroy (1f, bulletClone));
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (1f, bulletClone2));
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
-			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+<<<<<<< HEAD
+            PlaySound(3);
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone));
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone2));
+
+			GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone3));
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
-			GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+<<<<<<< HEAD
+            PlaySound(4);
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
-			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone2));
-			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+
+			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone3));
-			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+
+			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
 			bulletClone4.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone4));
 		}
 	}
 
 	private IEnumerator Cooldown(float seconds, int typeOfWait) {
-		yield return new WaitForSeconds (seconds);
 		switch (typeOfWait) {
 		case SPECIAL_WAIT:
-			specialWait = false;
+            this.specialBar.fillAmount = 0;
+            int intSecs = (int)seconds;
+            for (int i = 0; i <= intSecs; i++) {
+                yield return new WaitForSeconds(1);
+                this.specialBar.fillAmount = i / (float)this.maxSpecialTime;
+            }
+            specialWait = false;
 			break;
 		case STANDARD_WAIT:
+                yield return new WaitForSeconds(seconds);
 			standardWait = false;
 			break;
 		}
@@ -267,4 +353,38 @@ public class PlayerController : MonoBehaviour {
 		yield return new WaitForSeconds (seconds);
 		Destroy (go);
 	}
+
+    public void HealPlayer(int qty) {
+        this.life += qty;
+        this.healthBar.fillAmount = (float)this.life / (float)this.maxLife;
+    }
+
+    private IEnumerator Heal(int seconds) {
+        Collider2D[] colliderPlayers = Physics2D.OverlapCircleAll(this.transform.position, 5);
+        print("HEALING");
+        print(colliderPlayers.Length);
+        List<GameObject> players = new List<GameObject>();
+        foreach (Collider2D coll in colliderPlayers) {
+            if(coll.transform.tag == "PlayerTag") {
+                print(coll.transform.name);
+                players.Add(coll.transform.gameObject);
+            }
+        }
+        for(int i = 0; i < seconds; i++) {
+            yield return new WaitForSeconds(1f);
+            foreach(GameObject player in players) {
+                PlayerController script = player.GetComponent<PlayerController>();
+                script.HealPlayer(1);
+            }
+        }
+        yield break;
+    }
+
+    void PlaySound (int clip)
+    {
+        print("Sound: " + clip);
+        AudioSource audioS = this.GetComponent<AudioSource>();
+        audioS.clip = audioClip[clip];
+        audioS.Play();
+    }
 }

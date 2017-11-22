@@ -7,8 +7,8 @@ using System;
 public class FlameController : MonoBehaviour {
 
 	public GameObject[] players;
-	private static int speed = 5;
-	private static int life = 3;
+	private int speed = 5;
+	private int life = 3;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;

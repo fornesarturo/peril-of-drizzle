@@ -31,7 +31,7 @@ public class CameraScript : MonoBehaviour {
 		}
         else {
             transform.position = players[0].transform.position + offset;
-			cam.orthographicSize = 5f;
+			cam.orthographicSize = 7f;
         }
 	}
 
@@ -52,11 +52,11 @@ public class CameraScript : MonoBehaviour {
                 }
             }
         }
-        if (distance < 4) {
-            distance = 4f;
+        if (distance < 10) {
+            distance = 10f;
         }
-        if (distance > 40) {
-            distance = 40f;
+        if (distance > 30) {
+            distance = 30f;
         }
         Vector3 cameraDest = middle - cam.transform.forward * distance * zoom;
         if (cam.orthographic) {
