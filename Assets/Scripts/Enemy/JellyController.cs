@@ -7,8 +7,8 @@ using System;
 public class JellyController : MonoBehaviour {
 
 	public GameObject[] players;
-	private static int speed = 3;
-	private static int life = 5;
+	private int speed = 3;
+	private int life = 5;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;

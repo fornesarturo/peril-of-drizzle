@@ -7,7 +7,7 @@ using System;
 public class BotController : MonoBehaviour {
 
 	public GameObject[] players;
-	private static int speed = 5;
+	private int speed = 5;
 	public int life = 100;
 	private GameObject closest;
 	private GameObject prevClosest;
