@@ -15,6 +15,7 @@ TagManager:
   - FlameAttack
   - JellyAttack
   - BotAttack
+  - BotBullet
   layers:
   - Default
   - TransparentFX

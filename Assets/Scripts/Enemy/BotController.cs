@@ -16,11 +16,17 @@ public class BotController : MonoBehaviour {
 	private float direction;
     private Animator animator;
 	private GameObject attackHitbox;
-	// Use this for initialization
-	void Start () {
+    private bool canShoot;
+    public GameObject bullet;
+
+
+    // Use this for initialization
+    void Start () {
         this.animator = this.GetComponent<Animator>();
 		this.attackHitbox = transform.GetChild (0).gameObject;
-		this.attackHitbox.SetActive (false);
+		this.attackHitbox.SetActive (true);
+        this.canShoot = false;
+        StartCoroutine(Cooldown(4f));
 	}
 
 	// Update is called once per frame
@@ -38,6 +44,13 @@ public class BotController : MonoBehaviour {
 			if (isFar) {
 				animator.SetFloat("Speed", -direction);
 				transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
+                if(canShoot) {
+                    animator.SetTrigger("Attack");
+                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+                    bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1*(direction/Mathf.Abs(direction)) * 40, 0), ForceMode2D.Impulse);
+                    canShoot = false;
+                    StartCoroutine(Cooldown(2.5f));
+                }
 			} else {
 				animator.SetFloat("Speed", 0);
 				if (!attackActive) {
@@ -78,7 +91,7 @@ public class BotController : MonoBehaviour {
 		while (true) {
 			this.attackHitbox.SetActive (true);
 			animator.SetTrigger("Attack");
-			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.0f;
+			bool localFar = Vector2.Distance (transform.position, go.transform.position) > 1.1f;
 			if (localFar) {
 				attackActive = false;
 				this.attackHitbox.SetActive (false);
@@ -96,4 +109,10 @@ public class BotController : MonoBehaviour {
 		speed = 5;
 		yield break;
 	}
+
+    IEnumerator Cooldown(float seconds) {
+        yield return new WaitForSeconds(seconds);
+        canShoot = true;
+        yield break;
+    }
 }

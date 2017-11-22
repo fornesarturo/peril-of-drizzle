@@ -13,16 +13,16 @@ public class SceneLoader : MonoBehaviour {
 	}
 
     public void ClickG1() {
-        SceneManager.LoadScene("Level1", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Level1", LoadSceneMode.Single);
         Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
 
     public void ClickG2() {
-        SceneManager.LoadScene("Level2", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Level2", LoadSceneMode.Single);
         Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
     public void ClickG3() {
-        SceneManager.LoadScene("Level3", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Level3", LoadSceneMode.Single);
         Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
 }
