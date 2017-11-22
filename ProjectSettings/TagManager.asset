@@ -18,6 +18,7 @@ TagManager:
   - BotBullet
   - DogCloseAttack
   - DogFarAttack
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -44,7 +45,7 @@ TagManager:
   - DogCloseAttack
   - DogFarAttack
   - 
-  - 
+  - Coin
   - 
   - 
   - 

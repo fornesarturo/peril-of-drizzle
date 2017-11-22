@@ -281,17 +281,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
             PlaySound(3);
-            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone));
-
-			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
-			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone2));
-
-			GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
-			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone3));
+            StartCoroutine(SniperAttack());
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
             PlaySound(4);
@@ -361,6 +351,21 @@ public class PlayerController : MonoBehaviour {
                 script.HealPlayer(1);
             }
         }
+        yield break;
+    }
+
+    private IEnumerator SniperAttack() {
+        GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+        bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone));
+        yield return new WaitForSeconds(.15f);
+        GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+        bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone2));
+        yield return new WaitForSeconds(.15f);
+        GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+        bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone3));
         yield break;
     }
 
