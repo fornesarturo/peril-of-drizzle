@@ -46,7 +46,7 @@ public class BotController : MonoBehaviour {
 				transform.position = Vector2.MoveTowards (transform.position, prevClosest.transform.position, speed * Time.deltaTime);
                 if(canShoot) {
                     animator.SetTrigger("Attack");
-                    GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+					GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
                     bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1*(direction/Mathf.Abs(direction)) * 40, 0), ForceMode2D.Impulse);
                     canShoot = false;
                     StartCoroutine(Cooldown(2.5f));
