@@ -204,6 +204,20 @@ public class PlayerController : MonoBehaviour {
                 Knockback(-1);
             DoDamage(1);
             break;
+		case "DogFarAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (3);
+			break;
+		case "DogCloseAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (4);
+			break;
         }
     }
 
