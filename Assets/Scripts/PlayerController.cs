@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour {
                     PlaySound(1);
                     animator.SetTrigger("Attack");
 					standardWait = true;
-					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation) as GameObject;
+					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation, transform) as GameObject;
 					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
 					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
@@ -139,10 +139,10 @@ public class PlayerController : MonoBehaviour {
                 PlaySound(5);
                 animator.SetTrigger("Attack");
 				if (direction > 0) {
-					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
 					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
 				} else {
-					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation) as GameObject;
+					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
 					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
 				}
 
@@ -209,6 +209,20 @@ public class PlayerController : MonoBehaviour {
                 Knockback(-1);
             DoDamage(1);
             break;
+		case "DogFarAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (3);
+			break;
+		case "DogCloseAttack":
+			if ((transform.position - collision.transform.position).x < 0)
+				Knockback (1);
+			else
+				Knockback (-1);
+			DoDamage (4);
+			break;
         }
     }
 
@@ -250,35 +264,66 @@ public class PlayerController : MonoBehaviour {
 		animator.SetTrigger("Special");
         StartCoroutine(Cooldown(maxSpecialTime, SPECIAL_WAIT));
         if (this.characterSpriteNumber == 1) { // if jose (this is an immigrant joke)
+<<<<<<< HEAD
             PlaySound(6);
             GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation) as GameObject;
+=======
+			GameObject healClone = Instantiate(healRadius, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
             StartCoroutine(WaitToDestroy(0.2f, healClone));
             StartCoroutine(Heal(3));
 		}
 		else if (this.characterSpriteNumber == 0) { // if bob
+<<<<<<< HEAD
             PlaySound(2);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+			StartCoroutine (WaitToDestroy (1f, bulletClone));
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position-new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (1f, bulletClone2));
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
+<<<<<<< HEAD
             PlaySound(3);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone));
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone2));
+
+			GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+			StartCoroutine (WaitToDestroy (2f, bulletClone3));
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
+<<<<<<< HEAD
             PlaySound(4);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+=======
+            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+>>>>>>> refs/remotes/origin/multi-feature-set
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
-			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+
+			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone2));
-			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation) as GameObject;
+
+			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone3));
-			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+
+			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
 			bulletClone4.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
 			StartCoroutine (WaitToDestroy (0.5f, bulletClone4));
 		}
