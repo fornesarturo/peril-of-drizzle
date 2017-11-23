@@ -5,13 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class CameraScript : MonoBehaviour {
 
-	private GameObject[] players;
+    static bool[] levelsWin = { false, false, false };
+    static int levelPlayed;
+
+    private GameObject[] players;
 	private int prevLength;
 	private Vector3 offset;
 	private Camera cam;
     private int levelCoins;
 	// Use this for initialization
 	void Start () {
+        
 		players = GameObject.FindGameObjectsWithTag ("PlayerTag");
 		prevLength = players.Length;
         offset = new Vector3(0, 0, -10);
@@ -24,7 +28,7 @@ public class CameraScript : MonoBehaviour {
 
         if(levelCoins == 0) {
             Debug.Log("Victory!");
-            StartCoroutine(ReturnTuMenu());
+            StartCoroutine(ReturnTuMenuWin());
         }
 
 		if (players.Length > 1) {
@@ -82,8 +86,23 @@ public class CameraScript : MonoBehaviour {
         prevLength = players.Length;
     }
 
+    public IEnumerator ReturnTuMenuWin() {
+        yield return new WaitForSeconds(2);
+        levelsWin[levelPlayed] = true;
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+
     public IEnumerator ReturnTuMenu() {
         yield return new WaitForSeconds(2);
+        levelsWin[levelPlayed] = false;
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+
+    public void PlayLevel(int i) {
+        levelPlayed = i;
+    }
+
+    public bool[] GetPassed() {
+        return levelsWin;
     }
 }
