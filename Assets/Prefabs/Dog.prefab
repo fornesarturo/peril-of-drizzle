@@ -122,6 +122,7 @@ MonoBehaviour:
     type: 2}
   farRangeAttack: {fileID: 1712687366264332, guid: 517eb25fff3092649af023bc2f6c76b5,
     type: 2}
+  coin: {fileID: 1905785934661274, guid: eb45cf2c43ad0d44b81b771850954800, type: 2}
 --- !u!212 &212367841473546080
 SpriteRenderer:
   m_ObjectHideFlags: 1

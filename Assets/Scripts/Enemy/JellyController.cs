@@ -20,11 +20,11 @@ public class JellyController : MonoBehaviour {
     void Start() {
         this.animator = this.GetComponent<Animator>();
 		this.attackHitbox = transform.GetChild (0).gameObject;
-		this.attackHitbox.SetActive (false);
+        this.attackHitbox.SetActive(true);
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 		players = GameObject.FindGameObjectsWithTag("PlayerTag");
 		if (players.Length > 0) {
 			float maxDistance = players.Min (x => (x.transform.position - this.transform.position).sqrMagnitude);

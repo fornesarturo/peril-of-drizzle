@@ -46,7 +46,9 @@ public class PlayerController : MonoBehaviour {
         rb2.gravityScale = gravity;
 		this.characterSpriteNumber = PlayerPrefs.GetInt("PlayerSprite" + this.playerNo);
 		if (this.characterSpriteNumber == -1) {
-			Destroy (gameObject);
+            transform.tag = "Dead";
+            Camera.main.GetComponent<CameraScript>().SearchPlayers();
+            Destroy (gameObject);
 		} else {
 			this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
 			this.animator = this.gameObject.AddComponent<Animator>();
@@ -174,55 +176,60 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         switch(collision.transform.tag) {
-		case "Rope":
-			rope = true;
-			break;
-        case "Border":
-            Destroy(transform.gameObject);
-            break;
-		case "FlameAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(1);
-			break;
-		case "JellyAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(1);
-			break;
-		case "BotAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(2);
-			break;
-        case "BotBullet":
-            Destroy (collision.transform.gameObject);
-            if ((transform.position - collision.transform.position).x < 0)
-                Knockback(1);
-            else
-                Knockback(-1);
-            DoDamage(1);
-            break;
-		case "DogFarAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage (3);
-			break;
-		case "DogCloseAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage (4);
-			break;
+            case "Rope":
+			    rope = true;
+			    break;
+            case "Border":
+                Destroy(transform.gameObject);
+                break;
+		    case "FlameAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(1);
+			    break;
+		    case "JellyAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(1);
+			    break;
+		    case "BotAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(2);
+			    break;
+            case "BotBullet":
+                Destroy (collision.transform.gameObject);
+                if ((transform.position - collision.transform.position).x < 0)
+                    Knockback(1);
+                else
+                    Knockback(-1);
+                DoDamage(1);
+                break;
+		    case "DogFarAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage (3);
+			    break;
+		    case "DogCloseAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage (4);
+			    break;
+            case "Coin":
+                Destroy(collision.gameObject);
+                print("Money");
+                Camera.main.GetComponent<CameraScript>().TakeCoin();
+                break;
         }
     }
 
@@ -254,7 +261,8 @@ public class PlayerController : MonoBehaviour {
 	private void Die() {
         PlaySound(7);
         gameObject.tag = "Dead";
-		animator.SetBool ("Dead", true);
+        Camera.main.GetComponent<CameraScript>().SearchPlayers();
+        animator.SetBool ("Dead", true);
         Destroy(this.transform.Find("PlayerCanvas").gameObject);
 		// Destroy (transform.gameObject);
 		Destroy (this);
@@ -335,8 +343,6 @@ public class PlayerController : MonoBehaviour {
 
     private IEnumerator Heal(int seconds) {
         Collider2D[] colliderPlayers = Physics2D.OverlapCircleAll(this.transform.position, 5);
-        print("HEALING");
-        print(colliderPlayers.Length);
         List<GameObject> players = new List<GameObject>();
         foreach (Collider2D coll in colliderPlayers) {
             if(coll.transform.tag == "PlayerTag") {

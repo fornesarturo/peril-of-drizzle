@@ -20,7 +20,7 @@ public class FlameController : MonoBehaviour {
 	void Start () {
         this.animator = this.GetComponent<Animator>();
 		this.attackHitbox = transform.GetChild (0).gameObject;
-		this.attackHitbox.SetActive (false);
+        this.attackHitbox.SetActive(true);
     }
 
     // Update is called once per frame

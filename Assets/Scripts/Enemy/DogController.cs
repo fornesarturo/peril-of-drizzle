@@ -8,7 +8,7 @@ public class DogController : MonoBehaviour {
 
 	public GameObject[] players;
 	private static int speed = 5;
-	private static int life = 10;
+	private static int life = 1;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;
@@ -17,6 +17,8 @@ public class DogController : MonoBehaviour {
 	private Animator animator;
 	public GameObject closeRangeAttack;
 	public GameObject farRangeAttack;
+    public GameObject coin;
+
 	// Use this for initialization
 	void Start () {
 		this.animator = this.GetComponent<Animator>();
@@ -54,6 +56,7 @@ public class DogController : MonoBehaviour {
 			Destroy (c.transform.gameObject);
 			life--;
 			if (life <= 0) {
+                Instantiate(coin, transform.position, transform.rotation);
 				Destroy (transform.gameObject);
 				break;
 			}
@@ -63,6 +66,7 @@ public class DogController : MonoBehaviour {
 			Destroy (c.transform.gameObject);
 			life--;
 			if (life <= 0) {
+                Instantiate(coin, transform.position, transform.rotation);
 				Destroy (transform.gameObject);
 				break;
 			}

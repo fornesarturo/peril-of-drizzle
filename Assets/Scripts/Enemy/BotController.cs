@@ -8,7 +8,7 @@ public class BotController : MonoBehaviour {
 
 	public GameObject[] players;
 	private int speed = 5;
-	public int life = 100;
+	public int life;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;
@@ -18,7 +18,7 @@ public class BotController : MonoBehaviour {
 	private GameObject attackHitbox;
     private bool canShoot;
     public GameObject bullet;
-
+    public GameObject coin;
 
     // Use this for initialization
     void Start () {
@@ -26,6 +26,7 @@ public class BotController : MonoBehaviour {
 		this.attackHitbox = transform.GetChild (0).gameObject;
 		this.attackHitbox.SetActive (true);
         this.canShoot = false;
+        this.life = 10;
         StartCoroutine(Cooldown(4f));
 	}
 
@@ -67,6 +68,7 @@ public class BotController : MonoBehaviour {
 			Destroy (c.transform.gameObject);
 			life--;
 			if (life <= 0) {
+                Instantiate(coin, transform.position, transform.rotation);
 				Destroy (transform.gameObject);
 				break;
 			}
@@ -76,6 +78,7 @@ public class BotController : MonoBehaviour {
 			Destroy (c.transform.gameObject);
 			life--;
 			if (life <= 0) {
+                Instantiate(coin, transform.position, transform.rotation);
 				Destroy (transform.gameObject);
 				break;
 			}

@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 4943320704379892}
   - component: {fileID: 58900840385457698}
   m_Layer: 19
-  m_Name: GameObject
+  m_Name: Attack
   m_TagString: FlameAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

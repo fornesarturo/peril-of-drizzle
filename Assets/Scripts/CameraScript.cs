@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraScript : MonoBehaviour {
 
@@ -8,22 +9,24 @@ public class CameraScript : MonoBehaviour {
 	private int prevLength;
 	private Vector3 offset;
 	private Camera cam;
+    private int levelCoins;
 	// Use this for initialization
 	void Start () {
 		players = GameObject.FindGameObjectsWithTag ("PlayerTag");
 		prevLength = players.Length;
-        offset = transform.position - players[0].transform.position;
+        offset = new Vector3(0, 0, -10);
 		cam = GetComponent<Camera>();
+        levelCoins = GameObject.FindGameObjectsWithTag("Coin").Length + 1; // Extra boss coin
     }
 	
 	// Update is called once per frame
 	void Update () {
-		GameObject[] tempPlayers = GameObject.FindGameObjectsWithTag ("PlayerTag");
-		if (prevLength != tempPlayers.Length) {
-			players = tempPlayers;
-            prevLength = players.Length;
-		}
-		Debug.Log ("TempPlayers=" + tempPlayers.ToString());
+
+        if(levelCoins == 0) {
+            Debug.Log("Victory!");
+            StartCoroutine(ReturnTuMenu());
+        }
+
 		if (players.Length > 1) {
 			FixedCamera ();
 		} else if (players.Length == 0) {
@@ -66,5 +69,21 @@ public class CameraScript : MonoBehaviour {
         if (Vector3.Distance(cameraDest, cam.transform.position) <= 0.05f) {
             cam.transform.position = cameraDest;
         }
+    }
+
+    public void TakeCoin() {
+        levelCoins--;
+    }
+
+    public void SearchPlayers() {
+        print("Searching players");
+        GameObject[] tempPlayers = GameObject.FindGameObjectsWithTag("PlayerTag");
+        players = tempPlayers;
+        prevLength = players.Length;
+    }
+
+    public IEnumerator ReturnTuMenu() {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 }
