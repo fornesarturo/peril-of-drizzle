@@ -2,17 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class CameraScript : MonoBehaviour {
 
-    static bool[] levelsWin = { false, false, false };
-    static int levelPlayed;
+    public Texture defeatImage;
+    public Texture victoryImage;
+    public Texture clearedImage;
+    public Texture gameOverImage;
 
     private GameObject[] players;
 	private int prevLength;
 	private Vector3 offset;
 	private Camera cam;
     private int levelCoins;
+    private bool showDefeat;
+    private bool showVictory;
+    private bool showCleared;
+    private bool showGameOver;
+    private bool fadeDone = false;
+    private float guiAlpha;
+
 	// Use this for initialization
 	void Start () {
         
@@ -21,20 +31,26 @@ public class CameraScript : MonoBehaviour {
         offset = new Vector3(0, 0, -10);
 		cam = GetComponent<Camera>();
         levelCoins = GameObject.FindGameObjectsWithTag("Coin").Length + 1; // Extra boss coin
+        showDefeat = false;
+        showVictory = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
 
         if(levelCoins == 0) {
-            Debug.Log("Victory!");
-            StartCoroutine(ReturnTuMenuWin());
+            StartCoroutine(ReturnTuMenuCleared());
         }
-
 		if (players.Length > 1) {
 			FixedCamera ();
 		} else if (players.Length == 0) {
-			Debug.Log("Doneso.");
+            if(SceneManager.GetActiveScene().name != "Menu" && SceneManager.GetActiveScene().name != "CharacterSelect") {
+                showDefeat = true;
+                for (int i = 1; i <= 3; i++) {
+                    PlayerPrefs.SetInt("Level" + i, 0);
+                }
+                StartCoroutine(ReturnTuMenu());
+            }
 		}
         else {
             transform.position = players[0].transform.position + offset;
@@ -80,29 +96,102 @@ public class CameraScript : MonoBehaviour {
     }
 
     public void SearchPlayers() {
-        print("Searching players");
         GameObject[] tempPlayers = GameObject.FindGameObjectsWithTag("PlayerTag");
         players = tempPlayers;
         prevLength = players.Length;
     }
 
-    public IEnumerator ReturnTuMenuWin() {
-        yield return new WaitForSeconds(2);
-        levelsWin[levelPlayed] = true;
-        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    public IEnumerator ReturnTuMenuCleared() {
+        
+        PlayerPrefs.SetInt("Level"+PlayerPrefs.GetInt("LevelPlayed"), 1);
+        bool allCleared = true;
+        for(int i = 0; i < 3; i++) {
+            if(PlayerPrefs.GetInt("Level"+(i+1)) == 0) {
+                allCleared = false;
+                break;
+            }
+        }
+        if(allCleared) {
+            showVictory = true;
+        }
+        else {
+            GameObject[] spawners = GameObject.FindGameObjectsWithTag("Spawner");
+            foreach(GameObject spawner in spawners) {
+                Destroy(spawner);
+            }
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("EnemyTag");
+            foreach (GameObject enemy in enemies) {
+                Component[] components = enemy.GetComponents<Component>();
+                foreach(Component c in components) {
+                    if(c is Transform || c is SpriteRenderer || c is Animator) {
+                        continue;
+                    }
+                    Destroy(c);
+                }
+            }
+            showCleared = true;
+            yield return new WaitForSeconds(3);
+            SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+        yield break;
     }
 
     public IEnumerator ReturnTuMenu() {
-        yield return new WaitForSeconds(2);
-        levelsWin[levelPlayed] = false;
-        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        if(PlayerPrefs.GetInt("Tries") != 0) {
+            PlayerPrefs.SetInt("Tries", PlayerPrefs.GetInt("Tries") - 1);
+            showDefeat = true;
+            for (int i = 1; i <= 4; i++) {
+                if (PlayerPrefs.GetInt("PlayerSprite" + i) != -1) {
+                    PlayerPrefs.SetInt("PlayerLife" + i, 20);
+                }
+            }
+            yield return new WaitForSeconds(3);
+            SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+        else {
+            showGameOver = true;
+        }
+        yield break;
     }
 
-    public void PlayLevel(int i) {
-        levelPlayed = i;
+    void OnGUI() {
+        Color tempColor = GUI.color;
+        tempColor.a = guiAlpha;
+        GUI.color = tempColor;
+
+        if(showDefeat) {
+            if(!fadeDone) {
+                StartCoroutine(GUIFade(0, 1, 2));
+            }
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), defeatImage, ScaleMode.StretchToFill);
+        }
+        else if(showVictory) {
+            if (!fadeDone) {
+                StartCoroutine(GUIFade(0, 1, 2));
+            }
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), victoryImage, ScaleMode.StretchToFill);
+        }
+        else if(showCleared) {
+            if (!fadeDone) {
+                StartCoroutine(GUIFade(0, 1, 2));
+            }
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), clearedImage, ScaleMode.StretchToFill);
+        }
+        else if (showGameOver) {
+            if (!fadeDone) {
+                StartCoroutine(GUIFade(0, 1, 2));
+            }
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), clearedImage, ScaleMode.StretchToFill);
+        }
     }
 
-    public bool[] GetPassed() {
-        return levelsWin;
+    IEnumerator GUIFade(float start, float end, float lenght) {
+        fadeDone = true;
+        for(float i = 0.0f; i < 1.0f; i += Time.deltaTime*(1/lenght)) {
+            guiAlpha = Mathf.Lerp(start, end, i);
+            yield return null;
+        }
+        guiAlpha = end;
+        yield break;
     }
 }

@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e25d4fd721add348b14c249f1f0eb15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button:
+  buttons:
   - {fileID: 1040707506}
   - {fileID: 1134939915}
   - {fileID: 272094056}
@@ -321,6 +321,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bf15962d3de39e46b95111c57df6571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defeatImage: {fileID: 2800000, guid: abdc4d6b8f901ec4b8e6a88ae302ab20, type: 3}
+  victoryImage: {fileID: 2800000, guid: ce80822fce61749428004a445fc7005a, type: 3}
+  clearedImage: {fileID: 2800000, guid: f6089c620e1c4e847b3655bbbefc88b1, type: 3}
+  gameOverImage: {fileID: 0}
 --- !u!1 &272094054
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +336,6 @@ GameObject:
   - component: {fileID: 272094058}
   - component: {fileID: 272094057}
   - component: {fileID: 272094056}
-  - component: {fileID: 272094059}
   m_Layer: 5
   m_Name: ButtonG3
   m_TagString: Untagged
@@ -397,7 +400,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 272094059}
+      - m_Target: {fileID: 201194505}
         m_MethodName: ClickG3
         m_Mode: 1
         m_Arguments:
@@ -443,18 +446,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 272094054}
---- !u!114 &272094059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 272094054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e25d4fd721add348b14c249f1f0eb15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: []
 --- !u!1001 &759005886
 Prefab:
   m_ObjectHideFlags: 0
@@ -512,7 +503,6 @@ GameObject:
   - component: {fileID: 1040707508}
   - component: {fileID: 1040707507}
   - component: {fileID: 1040707506}
-  - component: {fileID: 1040707509}
   m_Layer: 5
   m_Name: ButtonG1
   m_TagString: Untagged
@@ -577,7 +567,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1040707509}
+      - m_Target: {fileID: 201194505}
         m_MethodName: ClickG1
         m_Mode: 1
         m_Arguments:
@@ -623,18 +613,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1040707504}
---- !u!114 &1040707509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1040707504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e25d4fd721add348b14c249f1f0eb15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: []
 --- !u!1 &1134939913
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,7 +624,6 @@ GameObject:
   - component: {fileID: 1134939917}
   - component: {fileID: 1134939916}
   - component: {fileID: 1134939915}
-  - component: {fileID: 1134939918}
   m_Layer: 5
   m_Name: ButtonG2
   m_TagString: Untagged
@@ -711,7 +688,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1134939918}
+      - m_Target: {fileID: 201194505}
         m_MethodName: ClickG2
         m_Mode: 1
         m_Arguments:
@@ -757,18 +734,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1134939913}
---- !u!114 &1134939918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1134939913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e25d4fd721add348b14c249f1f0eb15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: []
 --- !u!1 &1222937131
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +803,7 @@ Transform:
   m_LocalScale: {x: 6, y: 6, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1290151738
 GameObject:

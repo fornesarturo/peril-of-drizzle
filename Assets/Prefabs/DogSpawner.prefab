@@ -9,47 +9,47 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1869542540857278}
+  m_RootGameObject: {fileID: 1099397297456094}
   m_IsPrefabParent: 1
---- !u!1 &1869542540857278
+--- !u!1 &1099397297456094
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4727653884449020}
-  - component: {fileID: 114103610538177164}
+  - component: {fileID: 4067833545667378}
+  - component: {fileID: 114082354189519370}
   m_Layer: 0
-  m_Name: JellySpawner
+  m_Name: DogSpawner
   m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4727653884449020
+--- !u!4 &4067833545667378
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1869542540857278}
+  m_GameObject: {fileID: 1099397297456094}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.47, y: 8.86, z: 0}
+  m_LocalPosition: {x: -27.96, y: 11.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114103610538177164
+--- !u!114 &114082354189519370
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1869542540857278}
+  m_GameObject: {fileID: 1099397297456094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e32361e3bbc22a94daa3667c302d07f2, type: 3}
+  m_Script: {fileID: 11500000, guid: d4acce422a1a449429acd5f60fd902a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnOfEvil: {fileID: 1772038132821328, guid: 95cf1b915f4b7d342b669aa4e655f664,
+  spawnOfEvil: {fileID: 1166562152615082, guid: d86f3e9294e08874f9fb71eb0bd7b5bc,
     type: 2}

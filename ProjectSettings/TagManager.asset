@@ -19,6 +19,7 @@ TagManager:
   - DogCloseAttack
   - DogFarAttack
   - Coin
+  - Spawner
   layers:
   - Default
   - TransparentFX

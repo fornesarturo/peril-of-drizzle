@@ -24,7 +24,12 @@ public class CharacterSelect : MonoBehaviour {
 		PlayerPrefs.SetInt ("PlayerLife2", -1);
 		PlayerPrefs.SetInt ("PlayerLife3", -1);
 		PlayerPrefs.SetInt ("PlayerLife4", -1);
-	}
+        PlayerPrefs.SetInt ("Level1", 0);
+        PlayerPrefs.SetInt ("Level2", 0);
+        PlayerPrefs.SetInt ("Level3", 0);
+        PlayerPrefs.SetInt ("LevelPlayed", 0);
+        PlayerPrefs.SetInt ("Tries", 3);
+    }
 	
 	// Update is called once per frame
 	void Update () {

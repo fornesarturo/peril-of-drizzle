@@ -7,34 +7,32 @@ using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour {
 
-    public Button[] button;
+    public Button[] buttons;
 
 	// Use this for initialization
 	void Start () {
-        bool[] passed = Camera.main.GetComponent<CameraScript>().GetPassed();
-        for(int i = 0; i < 3; i++) {
-            if(passed[i]) {
-                var colors = button[i].colors;
+        for(int i = 1; i <= 3; i++) {
+            if(PlayerPrefs.GetInt("Level"+i) == 1) {
+                int j = i - 1;
+                print(j);
+                var colors = buttons[j].colors;
                 colors.normalColor = Color.green;
-                button[i].colors = colors;
+                buttons[j].colors = colors;
             }
         }
 	}
 
     public void ClickG1() {
-        Camera.main.GetComponent<CameraScript>().PlayLevel(0);
+        PlayerPrefs.SetInt("LevelPlayed", 1);
         SceneManager.LoadScene("Level1", LoadSceneMode.Single);
-        Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
 
     public void ClickG2() {
-        Camera.main.GetComponent<CameraScript>().PlayLevel(1);
+        PlayerPrefs.SetInt("LevelPlayed", 2);
         SceneManager.LoadScene("Level2", LoadSceneMode.Single);
-        Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
     public void ClickG3() {
-        Camera.main.GetComponent<CameraScript>().PlayLevel(2);
+        PlayerPrefs.SetInt("LevelPlayed", 3);
         SceneManager.LoadScene("Level3", LoadSceneMode.Single);
-        Destroy(transform.gameObject.GetComponentInParent<Canvas>().gameObject);
     }
 }

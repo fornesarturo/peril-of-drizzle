@@ -227,7 +227,6 @@ public class PlayerController : MonoBehaviour {
 			    break;
             case "Coin":
                 Destroy(collision.gameObject);
-                print("Money");
                 Camera.main.GetComponent<CameraScript>().TakeCoin();
                 break;
         }
@@ -242,13 +241,13 @@ public class PlayerController : MonoBehaviour {
                 jumps = 1;
                 break;
             case "Border":
+                Die();
                 Destroy(transform.gameObject);
                 break;
         }
     }
 
 	public void Knockback(float direction) {
-		Debug.Log ("Knockback Magnitude: " + direction);
 		float magnitude = 10;
 		float xMagnitude = 10;
 		if (direction < 0) {
@@ -327,7 +326,6 @@ public class PlayerController : MonoBehaviour {
 			standardWait = false;
 			break;
 		}
-		Debug.Log ("Player " + playerNo + "\'s special ready! (" + Time.time + ")");
 		yield break;
 	}
 
@@ -353,6 +351,9 @@ public class PlayerController : MonoBehaviour {
         for(int i = 0; i < seconds; i++) {
             yield return new WaitForSeconds(1f);
             foreach(GameObject player in players) {
+                if(player == null || player.GetComponent<PlayerController>() == null) {
+                    continue;
+                }
                 PlayerController script = player.GetComponent<PlayerController>();
                 script.HealPlayer(1);
             }
@@ -376,7 +377,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     void PlaySound (int clip) {
-        print("Sound: " + clip);
         AudioSource audioS = this.GetComponent<AudioSource>();
         audioS.clip = audioClip[clip];
         audioS.Play();
