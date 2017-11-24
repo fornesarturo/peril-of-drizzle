@@ -112,28 +112,36 @@ public class CameraScript : MonoBehaviour {
             }
         }
         if(allCleared) {
+            killMinions();
             showVictory = true;
         }
         else {
-            GameObject[] spawners = GameObject.FindGameObjectsWithTag("Spawner");
-            foreach(GameObject spawner in spawners) {
-                Destroy(spawner);
-            }
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("EnemyTag");
-            foreach (GameObject enemy in enemies) {
-                Component[] components = enemy.GetComponents<Component>();
-                foreach(Component c in components) {
-                    if(c is Transform || c is SpriteRenderer || c is Animator) {
-                        continue;
-                    }
-                    Destroy(c);
-                }
-            }
+            killMinions();
             showCleared = true;
             yield return new WaitForSeconds(3);
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
         yield break;
+    }
+
+    public void killMinions() {
+        GameObject[] spawners = GameObject.FindGameObjectsWithTag("Spawner");
+        foreach (GameObject spawner in spawners) {
+            Destroy(spawner);
+        }
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("EnemyTag");
+        foreach (GameObject enemy in enemies) {
+            Component[] components = enemy.GetComponents<Component>();
+            foreach (Component c in components) {
+                if (c is Transform || c is SpriteRenderer || c is Animator) {
+                    continue;
+                }
+                Destroy(c);
+            }
+            foreach (Transform t in enemy.transform) {
+                Destroy(t.gameObject);
+            }
+        }
     }
 
     public IEnumerator ReturnTuMenu() {
