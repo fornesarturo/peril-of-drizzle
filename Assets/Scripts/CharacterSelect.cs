@@ -48,6 +48,8 @@ public class CharacterSelect : MonoBehaviour {
 				this.selectCharacter = false;
 				PlayerPrefs.SetInt ("PlayerSprite" + this.playerNo, this.characterSpriteNumber);
 				PlayerPrefs.SetInt ("PlayerLife" + this.playerNo, 20);
+			} else if (Input.GetKeyDown ("joystick " + this.playerNo + " button 1")) {
+				SceneManager.LoadScene("Splashscreen", LoadSceneMode.Single);
 			}
 		} else {
 			if (Input.GetKeyDown ("joystick " + this.playerNo + " button 1")) {
