@@ -46,9 +46,12 @@ public class PlayerController : MonoBehaviour {
         rb2.gravityScale = gravity;
 		this.characterSpriteNumber = PlayerPrefs.GetInt("PlayerSprite" + this.playerNo);
 		if (this.characterSpriteNumber == -1) {
-			Destroy (gameObject);
+            transform.tag = "Dead";
+            Camera.main.GetComponent<CameraScript>().SearchPlayers();
+            Destroy (gameObject);
 		} else {
 			this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+            this.spriteRenderer.sortingOrder = 3;
 			this.animator = this.gameObject.AddComponent<Animator>();
 			this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
 			this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
@@ -133,19 +136,23 @@ public class PlayerController : MonoBehaviour {
 					standardWait = true;
 					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation, transform) as GameObject;
 					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
+					StartCoroutine (WaitToDestroy (1f, bulletClone));
 					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
 			} else {
-                PlaySound(5);
-                animator.SetTrigger("Attack");
-				if (direction > 0) {
-					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
-				} else {
-					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
+				if (!standardWait) {
+					PlaySound (5);
+					animator.SetTrigger ("Attack");
+					if (direction > 0) {
+						GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
+						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
+					} else {
+						GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
+						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
+					}
 				}
-
 			}
         }
 
@@ -174,55 +181,60 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         switch(collision.transform.tag) {
-		case "Rope":
-			rope = true;
-			break;
-        case "Border":
-            Destroy(transform.gameObject);
-            break;
-		case "FlameAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(1);
-			break;
-		case "JellyAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(1);
-			break;
-		case "BotAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage(2);
-			break;
-        case "BotBullet":
-            Destroy (collision.transform.gameObject);
-            if ((transform.position - collision.transform.position).x < 0)
-                Knockback(1);
-            else
-                Knockback(-1);
-            DoDamage(1);
-            break;
-		case "DogFarAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage (3);
-			break;
-		case "DogCloseAttack":
-			if ((transform.position - collision.transform.position).x < 0)
-				Knockback (1);
-			else
-				Knockback (-1);
-			DoDamage (4);
-			break;
+            case "Rope":
+			    rope = true;
+			    break;
+            case "Border":
+                Destroy(transform.gameObject);
+                break;
+		    case "FlameAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(1);
+			    break;
+		    case "JellyAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(1);
+			    break;
+		    case "BotAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage(2);
+			    break;
+            case "BotBullet":
+                Destroy (collision.transform.gameObject);
+                if ((transform.position - collision.transform.position).x < 0)
+                    Knockback(1);
+                else
+                    Knockback(-1);
+                DoDamage(1);
+                break;
+		    case "DogFarAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage (3);
+			    break;
+		    case "DogCloseAttack":
+			    if ((transform.position - collision.transform.position).x < 0)
+				    Knockback (1);
+			    else
+				    Knockback (-1);
+			    DoDamage (4);
+			    break;
+            case "Coin":
+                PlaySound(8);
+                Destroy(collision.gameObject);
+                Camera.main.GetComponent<CameraScript>().TakeCoin();
+                break;
         }
     }
 
@@ -235,13 +247,13 @@ public class PlayerController : MonoBehaviour {
                 jumps = 1;
                 break;
             case "Border":
+                Die();
                 Destroy(transform.gameObject);
                 break;
         }
     }
 
 	public void Knockback(float direction) {
-		Debug.Log ("Knockback Magnitude: " + direction);
 		float magnitude = 10;
 		float xMagnitude = 10;
 		if (direction < 0) {
@@ -254,7 +266,8 @@ public class PlayerController : MonoBehaviour {
 	private void Die() {
         PlaySound(7);
         gameObject.tag = "Dead";
-		animator.SetBool ("Dead", true);
+        Camera.main.GetComponent<CameraScript>().SearchPlayers();
+        animator.SetBool ("Dead", true);
         Destroy(this.transform.Find("PlayerCanvas").gameObject);
 		// Destroy (transform.gameObject);
 		Destroy (this);
@@ -281,17 +294,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else if (this.characterSpriteNumber == 2) { // if rebecca
             PlaySound(3);
-            GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
-			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone));
-
-			GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
-			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone2));
-
-			GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
-			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (2f, bulletClone3));
+            StartCoroutine(SniperAttack());
 		}
 		else if (this.characterSpriteNumber == 3) { // if tyronne
             PlaySound(4);
@@ -325,11 +328,11 @@ public class PlayerController : MonoBehaviour {
             specialWait = false;
 			break;
 		case STANDARD_WAIT:
-                yield return new WaitForSeconds(seconds);
+			standardWait = true;
+            yield return new WaitForSeconds(seconds);
 			standardWait = false;
 			break;
 		}
-		Debug.Log ("Player " + playerNo + "\'s special ready! (" + Time.time + ")");
 		yield break;
 	}
 
@@ -345,8 +348,6 @@ public class PlayerController : MonoBehaviour {
 
     private IEnumerator Heal(int seconds) {
         Collider2D[] colliderPlayers = Physics2D.OverlapCircleAll(this.transform.position, 5);
-        print("HEALING");
-        print(colliderPlayers.Length);
         List<GameObject> players = new List<GameObject>();
         foreach (Collider2D coll in colliderPlayers) {
             if(coll.transform.tag == "PlayerTag") {
@@ -357,6 +358,9 @@ public class PlayerController : MonoBehaviour {
         for(int i = 0; i < seconds; i++) {
             yield return new WaitForSeconds(1f);
             foreach(GameObject player in players) {
+                if(player == null || player.GetComponent<PlayerController>() == null) {
+                    continue;
+                }
                 PlayerController script = player.GetComponent<PlayerController>();
                 script.HealPlayer(1);
             }
@@ -364,8 +368,22 @@ public class PlayerController : MonoBehaviour {
         yield break;
     }
 
+    private IEnumerator SniperAttack() {
+        GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+        bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone));
+        yield return new WaitForSeconds(.15f);
+        GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+        bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone2));
+        yield return new WaitForSeconds(.15f);
+        GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+        bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
+        StartCoroutine(WaitToDestroy(2f, bulletClone3));
+        yield break;
+    }
+
     void PlaySound (int clip) {
-        print("Sound: " + clip);
         AudioSource audioS = this.GetComponent<AudioSource>();
         audioS.clip = audioClip[clip];
         audioS.Play();

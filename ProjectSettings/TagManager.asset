@@ -18,6 +18,9 @@ TagManager:
   - BotBullet
   - DogCloseAttack
   - DogFarAttack
+  - Coin
+  - Spawner
+  - MenuSound
   layers:
   - Default
   - TransparentFX
@@ -44,7 +47,7 @@ TagManager:
   - DogCloseAttack
   - DogFarAttack
   - 
-  - 
+  - Coin
   - 
   - 
   - 

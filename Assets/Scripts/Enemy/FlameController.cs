@@ -20,7 +20,7 @@ public class FlameController : MonoBehaviour {
 	void Start () {
         this.animator = this.GetComponent<Animator>();
 		this.attackHitbox = transform.GetChild (0).gameObject;
-		this.attackHitbox.SetActive (false);
+        this.attackHitbox.SetActive(true);
     }
 
     // Update is called once per frame
@@ -62,12 +62,12 @@ public class FlameController : MonoBehaviour {
 			break;
 		case "Melee":
 			Destroy (c.transform.gameObject);
-			life--;
+			life -= 2;
 			if (life <= 0) {
 				Destroy (transform.gameObject);
 				break;
 			}
-			StartCoroutine(hitCorroutine (0.2f));
+			StartCoroutine(hitCorroutine (0.15f));
 			break;
         case "Border":
             Destroy(transform.gameObject);
