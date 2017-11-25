@@ -17,4 +17,12 @@ public class BulletController : MonoBehaviour {
 	void OnBecameInvisible() {
 		Destroy (gameObject);
 	}
+
+    void OnCollionEnter2D(Collision2D c) {
+        switch (c.transform.tag) {
+            case "Groud":
+                Destroy(gameObject);
+                break;
+        }
+    }
 }

@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour {
             Destroy (gameObject);
 		} else {
 			this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+            this.spriteRenderer.sortingOrder = 3;
 			this.animator = this.gameObject.AddComponent<Animator>();
 			this.spriteRenderer.sprite = this.sprites[this.characterSpriteNumber];
 			this.animator.runtimeAnimatorController = this.animators[this.characterSpriteNumber];
@@ -226,6 +227,7 @@ public class PlayerController : MonoBehaviour {
 			    DoDamage (4);
 			    break;
             case "Coin":
+                PlaySound(8);
                 Destroy(collision.gameObject);
                 Camera.main.GetComponent<CameraScript>().TakeCoin();
                 break;

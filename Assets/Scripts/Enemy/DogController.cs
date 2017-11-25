@@ -8,7 +8,7 @@ public class DogController : MonoBehaviour {
 
 	public GameObject[] players;
 	private static int speed = 5;
-	private static int life = 1;
+	private int life;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;
@@ -22,6 +22,7 @@ public class DogController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		this.animator = this.GetComponent<Animator>();
+        this.life = 150;
 	}
 
 	// Update is called once per frame

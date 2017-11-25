@@ -26,7 +26,7 @@ public class BotController : MonoBehaviour {
 		this.attackHitbox = transform.GetChild (0).gameObject;
 		this.attackHitbox.SetActive (true);
         this.canShoot = false;
-        this.life = 10;
+        this.life = 100;
         StartCoroutine(Cooldown(4f));
 	}
 

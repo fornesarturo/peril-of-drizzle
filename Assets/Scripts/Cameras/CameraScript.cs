@@ -15,7 +15,7 @@ public class CameraScript : MonoBehaviour {
 	private int prevLength;
 	private Vector3 offset;
 	private Camera cam;
-    private int levelCoins;
+    public int levelCoins;
     private bool showDefeat;
     private bool showVictory;
     private bool showCleared;
@@ -30,13 +30,14 @@ public class CameraScript : MonoBehaviour {
 		prevLength = players.Length;
         offset = new Vector3(0, 0, -10);
 		cam = GetComponent<Camera>();
-        levelCoins = GameObject.FindGameObjectsWithTag("Coin").Length + 1; // Extra boss coin
         showDefeat = false;
         showVictory = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        print(levelCoins);
 
         if(levelCoins == 0) {
             StartCoroutine(ReturnTuMenuCleared());
@@ -45,7 +46,6 @@ public class CameraScript : MonoBehaviour {
 			FixedCamera ();
 		} else if (players.Length == 0) {
             if(SceneManager.GetActiveScene().name != "Menu" && SceneManager.GetActiveScene().name != "CharacterSelect") {
-                showDefeat = true;
                 for (int i = 1; i <= 3; i++) {
                     PlayerPrefs.SetInt("Level" + i, 0);
                 }
@@ -147,7 +147,7 @@ public class CameraScript : MonoBehaviour {
     }
 
     public IEnumerator ReturnTuMenu() {
-        if(PlayerPrefs.GetInt("Tries") != 0) {
+        if(PlayerPrefs.GetInt("Tries") > 0) {
             PlayerPrefs.SetInt("Tries", PlayerPrefs.GetInt("Tries") - 1);
             showDefeat = true;
             for (int i = 1; i <= 4; i++) {
@@ -159,7 +159,10 @@ public class CameraScript : MonoBehaviour {
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
         else {
+            print("Gameover");
             showGameOver = true;
+            yield return new WaitForSeconds(5);
+            SceneManager.LoadScene("Spashscreen", LoadSceneMode.Single);
         }
         yield break;
     }
@@ -187,11 +190,12 @@ public class CameraScript : MonoBehaviour {
             }
             GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), clearedImage, ScaleMode.StretchToFill);
         }
-        else if (showGameOver) {
+        else if(showGameOver) {
+            print("Showing GO");
             if (!fadeDone) {
                 StartCoroutine(GUIFade(0, 1, 2));
             }
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), clearedImage, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), gameOverImage, ScaleMode.StretchToFill);
         }
     }
 

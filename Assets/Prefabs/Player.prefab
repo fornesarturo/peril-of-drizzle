@@ -323,6 +323,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b7da6d346069eb74a92802a6ca9ae337, type: 3}
   - {fileID: 8300000, guid: db37a0ea074068643a77df3e063c2b87, type: 3}
   - {fileID: 8300000, guid: 159c2b50771d8b645b85b44f0cad7d70, type: 3}
+  - {fileID: 8300000, guid: 022f9e5c7a504644fa6e37d40a972e9a, type: 3}
   horizontalControl: Horizontal_P1
   verticalControl: Vertical_P1
   playerNo: 1
