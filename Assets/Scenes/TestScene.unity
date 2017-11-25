@@ -631,6 +631,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bf15962d3de39e46b95111c57df6571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defeatImage: {fileID: 0}
+  victoryImage: {fileID: 0}
+  clearedImage: {fileID: 0}
+  gameOverImage: {fileID: 0}
+  score: {fileID: 0}
+  levelCoins: 2
 --- !u!1001 &812719865
 Prefab:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(levelCoins == 1) {
+		if(SceneManager.GetActiveScene().name == "Menu" && SceneManager.GetActiveScene().name == "CharacterSelect") {
             score.text = "";
         }
         else {

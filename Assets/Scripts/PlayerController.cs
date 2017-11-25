@@ -145,11 +145,11 @@ public class PlayerController : MonoBehaviour {
 					animator.SetTrigger ("Attack");
 					if (direction > 0) {
 						GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (WaitToDestroy (0.03f, meleeClone));
 						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
 					} else {
 						GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (WaitToDestroy (0.03f, meleeClone));
 						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
 					}
 				}
@@ -221,14 +221,14 @@ public class PlayerController : MonoBehaviour {
 				    Knockback (1);
 			    else
 				    Knockback (-1);
-			    DoDamage (3);
+			    DoDamage (4);
 			    break;
 		    case "DogCloseAttack":
 			    if ((transform.position - collision.transform.position).x < 0)
 				    Knockback (1);
 			    else
 				    Knockback (-1);
-			    DoDamage (4);
+			    DoDamage (5);
 			    break;
             case "Coin":
                 PlaySound(8);
@@ -300,19 +300,19 @@ public class PlayerController : MonoBehaviour {
             PlaySound(4);
             GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
 			bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (0.5f, bulletClone));
+			StartCoroutine (WaitToDestroy (0.15f, bulletClone));
 
 			GameObject bulletClone2 = Instantiate(bullet, transform.position - new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (0.5f, bulletClone2));
+			StartCoroutine (WaitToDestroy (0.15f, bulletClone2));
 
 			GameObject bulletClone3 = Instantiate(bullet, transform.position + new Vector3(0, 0.2f, 0), transform.rotation, transform) as GameObject;
 			bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (0.5f, bulletClone3));
+			StartCoroutine (WaitToDestroy (0.15f, bulletClone3));
 
 			GameObject bulletClone4 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
 			bulletClone4.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 40, 0), ForceMode2D.Impulse);
-			StartCoroutine (WaitToDestroy (0.5f, bulletClone4));
+			StartCoroutine (WaitToDestroy (0.15f, bulletClone4));
 		}
 	}
 
@@ -370,14 +370,17 @@ public class PlayerController : MonoBehaviour {
 
     private IEnumerator SniperAttack() {
         GameObject bulletClone = Instantiate(bullet, transform.position, transform.rotation) as GameObject;
+		bulletClone.transform.tag = "SniperBullet";
         bulletClone.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
         StartCoroutine(WaitToDestroy(2f, bulletClone));
         yield return new WaitForSeconds(.15f);
         GameObject bulletClone2 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+		bulletClone2.transform.tag = "SniperBullet";
         bulletClone2.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
         StartCoroutine(WaitToDestroy(2f, bulletClone2));
         yield return new WaitForSeconds(.15f);
         GameObject bulletClone3 = Instantiate(bullet, transform.position, transform.rotation, transform) as GameObject;
+		bulletClone3.transform.tag = "SniperBullet";
         bulletClone3.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 80, 0), ForceMode2D.Impulse);
         StartCoroutine(WaitToDestroy(2f, bulletClone3));
         yield break;

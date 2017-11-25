@@ -59,6 +59,15 @@ public class JellyController : MonoBehaviour {
 			}
 			StartCoroutine(hitCorroutine (0.1f));
 			break;
+		case "SniperBullet":
+			Destroy (c.transform.gameObject);
+			life -= 2;
+			if (life <= 0) {
+				Destroy (transform.gameObject);
+				break;
+			}
+			StartCoroutine(hitCorroutine (0.1f));
+			break;
 		case "Melee":
 			Destroy (c.transform.gameObject);
 			life -= 2;
