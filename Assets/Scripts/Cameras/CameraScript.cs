@@ -114,6 +114,8 @@ public class CameraScript : MonoBehaviour {
         if(allCleared) {
             killMinions();
             showVictory = true;
+            yield return new WaitForSeconds(5);
+            SceneManager.LoadScene("Credits", LoadSceneMode.Single);
         }
         else {
             killMinions();
