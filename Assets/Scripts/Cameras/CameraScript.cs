@@ -11,6 +11,8 @@ public class CameraScript : MonoBehaviour {
     public Texture clearedImage;
     public Texture gameOverImage;
 
+    public Text score;
+
     private GameObject[] players;
 	private int prevLength;
 	private Vector3 offset;
@@ -37,6 +39,14 @@ public class CameraScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(levelCoins == 1) {
+            score.text = "";
+        }
+        else {
+            score.text = "Remaining coins: " + levelCoins;
+        }
+        
 
         if(levelCoins == 0) {
             StartCoroutine(ReturnTuMenuCleared());
