@@ -21,6 +21,7 @@ public class CameraScript : MonoBehaviour {
     private bool showCleared;
     private bool showGameOver;
     private bool fadeDone = false;
+    private bool exiting = false;
     private float guiAlpha;
 
 	// Use this for initialization
@@ -37,22 +38,21 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        print(levelCoins);
-
         if(levelCoins == 0) {
             StartCoroutine(ReturnTuMenuCleared());
         }
 		if (players.Length > 1) {
 			FixedCamera ();
-		} else if (players.Length == 0) {
+		} else if (players.Length == 0 && !exiting) {
             if(SceneManager.GetActiveScene().name != "Menu" && SceneManager.GetActiveScene().name != "CharacterSelect") {
                 for (int i = 1; i <= 3; i++) {
                     PlayerPrefs.SetInt("Level" + i, 0);
                 }
+                exiting = true;
                 StartCoroutine(ReturnTuMenu());
             }
 		}
-        else {
+        else if (players.Length == 1) {
             transform.position = players[0].transform.position + offset;
 			cam.orthographicSize = 7f;
         }
@@ -147,7 +147,9 @@ public class CameraScript : MonoBehaviour {
     }
 
     public IEnumerator ReturnTuMenu() {
-        if(PlayerPrefs.GetInt("Tries") > 0) {
+        print("Tries:" + PlayerPrefs.GetInt("Tries"));
+        if(PlayerPrefs.GetInt("Tries") > 1) {
+            print("Repeat");
             PlayerPrefs.SetInt("Tries", PlayerPrefs.GetInt("Tries") - 1);
             showDefeat = true;
             for (int i = 1; i <= 4; i++) {
@@ -162,7 +164,7 @@ public class CameraScript : MonoBehaviour {
             print("Gameover");
             showGameOver = true;
             yield return new WaitForSeconds(5);
-            SceneManager.LoadScene("Spashscreen", LoadSceneMode.Single);
+            SceneManager.LoadScene("Splashscreen", LoadSceneMode.Single);
         }
         yield break;
     }
