@@ -136,19 +136,23 @@ public class PlayerController : MonoBehaviour {
 					standardWait = true;
 					GameObject bulletClone = Instantiate (bullet, transform.position, transform.rotation, transform) as GameObject;
 					bulletClone.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (direction * 40, 0), ForceMode2D.Impulse);
+					StartCoroutine (WaitToDestroy (1f, bulletClone));
 					StartCoroutine (Cooldown (0.25f, STANDARD_WAIT));
 				}
 			} else {
-                PlaySound(5);
-                animator.SetTrigger("Attack");
-				if (direction > 0) {
-					GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
-				} else {
-					GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
-					StartCoroutine (WaitToDestroy (0.2f, meleeClone));
+				if (!standardWait) {
+					PlaySound (5);
+					animator.SetTrigger ("Attack");
+					if (direction > 0) {
+						GameObject meleeClone = Instantiate (meleeRight, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
+						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
+					} else {
+						GameObject meleeClone = Instantiate (meleeLeft, transform.position + new Vector3 (direction, 0f, 0f), transform.rotation, transform) as GameObject;
+						StartCoroutine (WaitToDestroy (0.05f, meleeClone));
+						StartCoroutine (Cooldown (0.1f, STANDARD_WAIT));
+					}
 				}
-
 			}
         }
 
@@ -324,7 +328,8 @@ public class PlayerController : MonoBehaviour {
             specialWait = false;
 			break;
 		case STANDARD_WAIT:
-                yield return new WaitForSeconds(seconds);
+			standardWait = true;
+            yield return new WaitForSeconds(seconds);
 			standardWait = false;
 			break;
 		}

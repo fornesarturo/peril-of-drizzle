@@ -65,13 +65,13 @@ public class DogController : MonoBehaviour {
 			break;
 		case "Melee":
 			Destroy (c.transform.gameObject);
-			life--;
+			life -= 2;
 			if (life <= 0) {
                 Instantiate(coin, transform.position, transform.rotation);
 				Destroy (transform.gameObject);
 				break;
 			}
-			StartCoroutine(hitCorroutine (0.2f));
+			StartCoroutine(hitCorroutine (0.15f));
 			break;
 		case "Border":
 			Destroy(transform.gameObject);

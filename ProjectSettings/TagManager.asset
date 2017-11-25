@@ -20,6 +20,7 @@ TagManager:
   - DogFarAttack
   - Coin
   - Spawner
+  - MenuSound
   layers:
   - Default
   - TransparentFX
