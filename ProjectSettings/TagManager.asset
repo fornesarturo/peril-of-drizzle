@@ -15,6 +15,13 @@ TagManager:
   - FlameAttack
   - JellyAttack
   - BotAttack
+  - BotBullet
+  - DogCloseAttack
+  - DogFarAttack
+  - Coin
+  - Spawner
+  - MenuSound
+  - SniperBullet
   layers:
   - Default
   - TransparentFX
@@ -32,16 +39,16 @@ TagManager:
   - Player4
   - Melee
   - 
-  - 
+  - Boss
   - Enemy
   - FriendlyBullet
   - FlameAttack
   - JellyAttack
   - BotAttack
+  - DogCloseAttack
+  - DogFarAttack
   - 
-  - 
-  - 
-  - 
+  - Coin
   - 
   - 
   - 

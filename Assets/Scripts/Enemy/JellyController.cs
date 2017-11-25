@@ -7,8 +7,8 @@ using System;
 public class JellyController : MonoBehaviour {
 
 	public GameObject[] players;
-	private static int speed = 3;
-	private static int life = 5;
+	private int speed = 3;
+	private int life = 5;
 	private GameObject closest;
 	private GameObject prevClosest;
 	private bool attackActive = false;
@@ -20,11 +20,11 @@ public class JellyController : MonoBehaviour {
     void Start() {
         this.animator = this.GetComponent<Animator>();
 		this.attackHitbox = transform.GetChild (0).gameObject;
-		this.attackHitbox.SetActive (false);
+        this.attackHitbox.SetActive(true);
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 		players = GameObject.FindGameObjectsWithTag("PlayerTag");
 		if (players.Length > 0) {
 			float maxDistance = players.Min (x => (x.transform.position - this.transform.position).sqrMagnitude);
@@ -59,14 +59,23 @@ public class JellyController : MonoBehaviour {
 			}
 			StartCoroutine(hitCorroutine (0.1f));
 			break;
-		case "Melee":
+		case "SniperBullet":
 			Destroy (c.transform.gameObject);
-			life--;
+			life -= 2;
 			if (life <= 0) {
 				Destroy (transform.gameObject);
 				break;
 			}
-			StartCoroutine(hitCorroutine (0.2f));
+			StartCoroutine(hitCorroutine (0.1f));
+			break;
+		case "Melee":
+			Destroy (c.transform.gameObject);
+			life -= 2;
+			if (life <= 0) {
+				Destroy (transform.gameObject);
+				break;
+			}
+			StartCoroutine(hitCorroutine (0.15f));
 			break;
         case "Border":
             Destroy(transform.gameObject);
